@@ -50,22 +50,23 @@ namespace System
             _manager = manager ?? throw new ArgumentNullException(nameof(manager), "Manager parameter cannot be NULL.");
         }
 
-        private static string GetCallingMethod()
+        private static string GetCallingMethod(int index = 2)
         {
-            MethodBase m = new StackTrace().GetFrame(2).GetMethod();
-            return String.Concat(m.ReflectedType.FullName, ".", m.Name);
+            MethodBase method = new StackTrace().GetFrame(index).GetMethod();
+            return String.Concat(method.ReflectedType.FullName, ".", method.Name);
         }
 
         /// <summary>
-        /// Write a event marked as critical.
+        /// Write a critical event to the logger.
         /// </summary>
-        /// <param name="data">Data</param>
-        /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Critical(string data, [CallerMemberName]string service = "")
+        public static void Critical(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (service == null) service = GetCallingMethod();
-            _manager.Write(new EventMessage(EventLevel.Critical, data, service));
+            _manager.Write(new EventMessage(EventLevel.Critical, content, memberName, sourceFilePath, sourceLineNumber));
         }
 
         /// <summary>
@@ -81,25 +82,27 @@ namespace System
         /// <summary>
         /// Write a event marked as debug.
         /// </summary>
-        /// <param name="data">Data</param>
-        /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Debug(string data, string service = null)
+        public static void Debug(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (service == null) service = GetCallingMethod();
-            _manager.Write(new EventMessage(EventLevel.Debug, data, service));
+            _manager.Write(new EventMessage(EventLevel.Debug, content, memberName, sourceFilePath, sourceLineNumber));
         }
 
         /// <summary>
         /// Write a event marked as error.
         /// </summary>
-        /// <param name="data">Data</param>
-        /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Error(string data, string service = null)
+        public static void Error(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (service == null) service = GetCallingMethod();
-            _manager.Write(new EventMessage(EventLevel.Error, data, service));
+            _manager.Write(new EventMessage(EventLevel.Error, content, memberName, sourceFilePath, sourceLineNumber));
         }
 
         /// <summary>
@@ -115,25 +118,27 @@ namespace System
         /// <summary>
         /// Write a event marked as trace.
         /// </summary>
-        /// <param name="data">Data</param>
-        /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Trace(string data, string service = null)
+        public static void Trace(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (service == null) service = GetCallingMethod();
-            _manager.Write(new EventMessage(EventLevel.Trace, data, service));
+            _manager.Write(new EventMessage(EventLevel.Trace, content, memberName, sourceFilePath, sourceLineNumber));
         }
 
         /// <summary>
         /// Write a event marked as warning.
         /// </summary>
-        /// <param name="data">Data</param>
-        /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Warning(string data, string service = null)
+        public static void Warning(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (service == null) service = GetCallingMethod();
-            _manager.Write(new EventMessage(EventLevel.Warning, data, service));
+            _manager.Write(new EventMessage(EventLevel.Warning, content, memberName, sourceFilePath, sourceLineNumber));
         }
 
         /// <summary>

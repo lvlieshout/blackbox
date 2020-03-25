@@ -46,19 +46,51 @@ namespace BlackBox
         public string Source { get; private set; }
 
         /// <summary>
-        /// Message
+        /// Content
         /// </summary>
-        public string Message { get; private set; }
+        public string Content { get; private set; }
 
         /// <summary>
-        /// Constructs event messages. Sets time stamp.
+        /// Construct event message with current timestamp.
         /// </summary>
-        public EventMessage(EventLevel severity, string message, [CallerMemberName]string source = "")
+        /// <param name="level">Severity level</param>
+        /// <param name="content">Content</param>
+        /// <param name="source">Source</param>
+        public EventMessage(EventLevel level, string content, string source)
         {
             TimeStamp   = DateTime.Now;
-            Level       = severity;
+            Level       = level;
             Source      = source;
-            Message     = message;
+            Content     = content;
+        }
+
+        /// <summary>
+        /// Construct event message with current timestamp and reference source file.
+        /// </summary>
+        /// <param name="level">Severity level</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        public static EventMessage Createx(EventLevel level, string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            return new EventMessage(level, content, String.Concat(sourceFilePath, ":", sourceLineNumber, ":", memberName));
+        }
+
+        /// <summary>
+        /// Construct event message with current timestamp and reference source file.
+        /// </summary>
+        /// <param name="level">Severity level</param>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        public EventMessage(EventLevel level, string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            TimeStamp   = DateTime.Now;
+            Level       = level;
+            Source      = String.Concat(sourceFilePath, "#", sourceLineNumber, "#", memberName);
+            Content     = content;
         }
 
         /// <summary>
@@ -67,7 +99,7 @@ namespace BlackBox
         /// <returns>Formatted event message.</returns>
         public override string ToString()
         {
-            return String.Concat(TimeStamp.ToString("yyyy-mm-dd hh:MM:ss"), " ", Level.ToString(), ": ", Message, " @ ", Source);
+            return String.Concat(TimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffff"), " ", Level.ToString().ToUpper(), " @ ", Source, ": ", Content);
         }
     }
 }

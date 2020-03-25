@@ -8,7 +8,7 @@
 
         public EventException()
         {
-            EventMessage = new EventMessage(EventLevel.Error, "No message set.");
+            EventMessage = new EventMessage(EventLevel.Error, "No message set.", StackTrace);
         }
 
         public EventException(EventMessage eventMessage)
@@ -18,12 +18,12 @@
 
         public EventException(string message) : base(message)
         {
-            EventMessage = new EventMessage(EventLevel.Error, message);
+            EventMessage = new EventMessage(EventLevel.Error, message, StackTrace);
         }
 
         public EventException(string message, Exception innerException) : base(message, innerException)
         {
-            EventMessage = new EventMessage(EventLevel.Error, message);
+            EventMessage = new EventMessage(EventLevel.Error, message, StackTrace);
         }
     }
 }

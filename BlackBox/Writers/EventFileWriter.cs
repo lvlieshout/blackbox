@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2012 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,12 +20,11 @@
  * IN THE SOFTWARE.
 */
 
-namespace BlackBox
+namespace BlackBox.Writers
 {
     using System;
     using System.IO;
     using System.Text;
-    using System.Configuration;
 
     /// <summary>
     /// Event writer which outputs to an file.
@@ -57,27 +56,17 @@ namespace BlackBox
         /// <param name="message">EventMessage</param>
         public void Write(EventMessage message)
         {
-            bool foundUsableFilename = false;
-            int n = 1;
             string rawFilename = Path.Combine(_path, _name + message.TimeStamp.ToString("yyyy-MM-dd")) + " ({0}).txt";
-            string filename = String.Format(rawFilename, n);
-
-            while (!foundUsableFilename)
+            int n = 0;
+            string filename;
+            FileInfo fileInfo;
+            do
             {
-                if (File.Exists(filename))
-                {
-                    FileInfo fileInfo = new FileInfo(filename);
-                    if (fileInfo.Length >= _maxSizeInKB * 1024)
-                    {
-                        n++;
-                        filename = String.Format(rawFilename, n);
-                    }
-                    else
-                        foundUsableFilename = true;
-                }
-                else
-                    foundUsableFilename = true;
+                n++;
+                filename = String.Format(rawFilename, n);
+                fileInfo = new FileInfo(filename);
             }
+            while (fileInfo.Exists && fileInfo.Length >= _maxSizeInKB * 1024);
             File.AppendAllText(filename, FormatMessage(message), Encoding.UTF8);            
         }
 
@@ -88,13 +77,17 @@ namespace BlackBox
         /// <returns>Formatted string of the event message</returns>
         protected virtual string FormatMessage(EventMessage message)
         {
-            string result = "--[BlackBox Event Message]-----------------------------------------------------";
-            result += "\r\nType:\t\t"       + message.Level.ToString();
-            result += "\r\nTimeStamp:\t"    + message.TimeStamp.ToString();
-            result += "\r\nSource:\t\t"     + message.Source;
-            result += "\r\nMessage:\r\n"    + message.Message;
-            result += "\r\n";
-            return result;
+            return String.Concat(
+                "-- ",
+                message.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.ffff"),
+                " ",
+                message.Level.ToString().ToUpper(),
+                " @ ",
+                message.Source,
+                " --",
+                Environment.NewLine,
+                message.Content,
+                Environment.NewLine);
         }
 
         // /// <summary>

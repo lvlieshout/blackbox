@@ -68,7 +68,7 @@ namespace BlackBox.Writers
             output += "][";
             output += message.Source;
             output += "]: ";
-            output += message.Message;
+            output += message.Content;
             return output;
         }
     }
