@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-
-namespace BlackBox.Test
+﻿namespace BlackBox.Test
 {
+    using System;
+    using Xunit;
+
     public class LogTest
     {
         [Fact]

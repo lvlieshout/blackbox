@@ -20,33 +20,33 @@
  * IN THE SOFTWARE.
 */
 
-namespace BlackBox
+namespace BlackBox.Writers
 {
     using System.Collections.Concurrent;
 
     /// <summary>
-    /// Event writer for testing purposes. Add event message to EventMessages list.
+    /// Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
     /// </summary>
-    public class EventMockWriter
+    public class EventQueueWriter
     {
         /// <summary>
-        /// List of written event messages.
+        /// Queue of written event messages.
         /// </summary>
         public ConcurrentQueue<EventMessage> Messages { get; protected set; }
 
         /// <summary>
-        /// Constructor of the EventMockWriter.
+        /// Constructor of the EventQueueWriter.
         /// </summary>
-        public EventMockWriter()
+        public EventQueueWriter()
         {
             Messages = new ConcurrentQueue<EventMessage>();
         }
 
         /// <summary>
-        /// Write an event message to the EventMessages list.
+        /// Write an event message to the EventMessages queue.
         /// </summary>
         /// <param name="message">EventMessage</param>
-        public void Write(EventMessage message)
+        public virtual void Write(EventMessage message)
         {
             Messages.Enqueue(message);
         }

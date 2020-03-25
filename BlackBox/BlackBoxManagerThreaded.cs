@@ -27,7 +27,7 @@ namespace BlackBox
     using System.Collections.Concurrent;
 
     /// <summary>
-    /// Black Box Manager. Handles log writing in a seperate thread.
+    /// Black Box Manager. Handles log writing in a seperate background thread.
     /// </summary>
     public class BlackBoxManagerThreaded : BlackBoxManager, IDisposable
     {
@@ -43,6 +43,10 @@ namespace BlackBox
         /// </summary>
         public BlackBoxManagerThreaded(int maxBufferSize = 10000, int safeBufferSize = 8000) : base()
         {
+            if (maxBufferSize < 1) throw new ArgumentOutOfRangeException(nameof(maxBufferSize));
+            if (safeBufferSize < 1) throw new ArgumentOutOfRangeException(nameof(safeBufferSize));
+            if (safeBufferSize > maxBufferSize) throw new ArgumentOutOfRangeException(nameof(safeBufferSize));
+
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(ProcessExit);
             AppDomain.CurrentDomain.DomainUnload += new EventHandler(ProcessExit);
             _queue = new ConcurrentQueue<EventMessage>();
@@ -63,7 +67,7 @@ namespace BlackBox
         public override void Write(EventMessage message)
         {
             if (_queue.Count > _maxBufferSize) return;
-            if (_queue.Count > _safeBufferSize && !(message.Severity == EventLevel.Error || message.Severity == EventLevel.Critical)) return;
+            if (_queue.Count > _safeBufferSize && message.Level <= EventLevel.Error) return;
             _queue.Enqueue(message);
             _resetEvent.Set();
         }
@@ -73,11 +77,10 @@ namespace BlackBox
         /// </summary>
         private void Writer()
         {
-            EventMessage message;
             while (_running)
             {
                 _resetEvent.WaitOne();
-                while (_queue.TryDequeue(out message))
+                while (_queue.TryDequeue(out EventMessage message))
                 {
                     base.Write(message);
                 }

@@ -20,56 +20,42 @@
  * IN THE SOFTWARE.
 */
 
-// Info: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-
 namespace BlackBox
 {
-    using System;
-
     /// <summary>
-    /// Event level types.
+    /// Event levels, defines the severity of an event. Also used to inducate the minimum level to log.
+    /// Excellent explanation of levels: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
     /// </summary>
-    [Flags]
     public enum EventLevel
     {
         /// <summary>
-        /// No log entry.
+        /// Critical/Fatal. Use when something happens which terminates the application. Direct attention is needed.
         /// </summary>
-        None        = 0,
-        
-        /// <summary>
-        /// Critical/Fatal, stops application to work.
-        /// </summary>
-        Critical    = 1 << 0,
+        Critical    = 1,
 
         /// <summary>
-        /// Error, there is something wrong but the application can continue to run.
+        /// Error. An exception has happend but the application can continue to run.
         /// </summary>
-        Error       = 1 << 1,
+        Error       = 2,
 
         /// <summary>
-        /// Warning, there is something wrong but the application can recover itself.
+        /// Warning. Something goes wrong but does not need direct attention. The application can recover itself.
         /// </summary>
-        Warning     = 1 << 2,
+        Warning     = 3,
 
         /// <summary>
-        /// Info, Informational for normal functionality.
+        /// Info. Informational for normal activity.
         /// </summary>
-        Info        = 1 << 3,
+        Info        = 4,
 
         /// <summary>
-        /// Trace, detailed info about the path and context of the application's going.
+        /// Trace. Detailed info about the path and context of the application's going.
         /// </summary>
-        Trace       = 1 << 4,
+        Trace       = 5,
 
         /// <summary>
-        /// Debug, very detailed info only activated in debug modus.
+        /// Debug. Very detailed info only activated in debug modus/debugger attached.
         /// </summary>
-        Debug       = 1 << 5,
-
-        Production  = Critical | Error | Warning,
-        Acceptance  = Production | Info,
-        Development = Acceptance | Trace | Debug,
-        All         = Development,
+        Debug       = 6,
     }
 }

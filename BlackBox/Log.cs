@@ -23,9 +23,10 @@
 namespace System
 {
     using System.Diagnostics;
-    using System.Collections;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using BlackBox;
+    using BlackBox.Writers;
 
     /// <summary>
     /// Static holder for a BlackBox manager instance. Use SetManager to assign an manager.
@@ -37,7 +38,7 @@ namespace System
         static Log()
         {
             _manager = new BlackBoxManager();
-            _manager.RegisterWriter(EventLevel.None, new EventNullWriter().Write);
+            _manager.RegisterWriter(EventLevel.Critical, EventNullWriter.Write);
         }
 
         /// <summary>
@@ -46,8 +47,7 @@ namespace System
         /// <param name="manager">BlackBoxManager</param>
         public static void SetManager(BlackBoxManager manager)
         {
-            if (manager == null) throw new ArgumentNullException("manager", "Manager parameter cannot be NULL.");
-            _manager = manager;
+            _manager = manager ?? throw new ArgumentNullException(nameof(manager), "Manager parameter cannot be NULL.");
         }
 
         private static string GetCallingMethod()
@@ -62,10 +62,20 @@ namespace System
         /// <param name="data">Data</param>
         /// <param name="service">Namespace, class and method (formated as namespace.class.Method). When NULL it will be auto generated.</param>
         [DebuggerStepThrough]
-        public static void Critical(string data, string service = null)
+        public static void Critical(string data, [CallerMemberName]string service = "")
         {
             if (service == null) service = GetCallingMethod();
             _manager.Write(new EventMessage(EventLevel.Critical, data, service));
+        }
+
+        /// <summary>
+        /// Write a event marked as critical.
+        /// </summary>
+        /// <param name="exception">Exception data used for the event message.</param>
+        [DebuggerStepThrough]
+        public static void Critical(Exception exception)
+        {
+            _manager.Write(exception.ToMessage(EventLevel.Critical));
         }
 
         /// <summary>

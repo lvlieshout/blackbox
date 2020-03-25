@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
 */
 
-namespace BlackBox
+namespace BlackBox.Writers
 {
     using System;
 
@@ -33,20 +33,25 @@ namespace BlackBox
         /// Write an event message to the console.
         /// </summary>
         /// <param name="message"></param>
-        public void Write(EventMessage message)
+        public virtual void Write(EventMessage message)
         {
-            ConsoleColor previousColor = Console.ForegroundColor;
-            switch (message.Severity)
+            ConsoleColor tempForegroundColor = Console.ForegroundColor;
+            ConsoleColor tempBackgroudnColor = Console.BackgroundColor;
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            switch (message.Level)
             {
                 case EventLevel.Critical:   Console.ForegroundColor = ConsoleColor.Magenta;     break;
                 case EventLevel.Debug:      Console.ForegroundColor = ConsoleColor.DarkGreen;   break;
                 case EventLevel.Error:      Console.ForegroundColor = ConsoleColor.Red;         break;
                 case EventLevel.Trace:      Console.ForegroundColor = ConsoleColor.Gray;        break;
                 case EventLevel.Warning:    Console.ForegroundColor = ConsoleColor.DarkMagenta; break;
+                case EventLevel.Info:       Console.ForegroundColor = ConsoleColor.Gray;        break;
                 default:                    Console.ForegroundColor = ConsoleColor.Gray;        break;
             }
             Console.WriteLine(FormatMessage(message));
-            Console.ForegroundColor = previousColor;
+            Console.ForegroundColor = tempForegroundColor;
+            Console.BackgroundColor = tempBackgroudnColor;
         }
 
         /// <summary>
@@ -59,9 +64,9 @@ namespace BlackBox
             string output = "[";
             output += message.TimeStamp.ToString("yyyy-mm-dd hh:MM:ss");
             output += "][";
-            output += message.Severity.ToString();
+            output += message.Level.ToString();
             output += "][";
-            output += message.Service;
+            output += message.Source;
             output += "]: ";
             output += message.Message;
             return output;

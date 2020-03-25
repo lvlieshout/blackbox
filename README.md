@@ -70,3 +70,5 @@ How to write your own
 ## Log
 Whats is it and how it works
 
+- Fluent configuation
+- Think about level as flag or short

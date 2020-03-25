@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2012 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -52,22 +52,22 @@ namespace BlackBox
         /// <summary>
         /// Register a event writer which will be triggered at given level.
         /// </summary>
-        /// <param name="level">Event level to trigger the writer.</param>
-        /// <param name="write">Event writer delegate.</param>
-        public void RegisterWriter(EventLevel level, EventWriter write)
+        /// <param name="minimumLevel">Event level to trigger the writer.</param>
+        /// <param name="writer">Event writer delegate.</param>
+        public void RegisterWriter(EventLevel minimumLevel, EventWriter writer)
         {
-            if (write == null) throw new ArgumentNullException("writer", "Event writer cannot be NULL");
-            _writers.Add(new EventWriterHolder(level, write));
+            if (writer == null) throw new ArgumentNullException(nameof(writer), "Event writer cannot be NULL");
+            _writers.Add(new EventWriterHolder(minimumLevel, writer));
         }
 
         /// <summary>
         /// Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
         /// </summary>
-        /// <param name="write">Event writer delegate.</param>
-        public void RegisterFallbackWriter(EventWriter write)
+        /// <param name="writer">Event writer delegate.</param>
+        public void RegisterFallbackWriter(EventWriter writer)
         {
-            if (write == null) throw new ArgumentNullException("writer", "Event writer cannot be NULL");
-            _writerFallBack = new EventWriterHolder(EventLevel.All, write);
+            if (writer == null) throw new ArgumentNullException(nameof(writer), "Event writer cannot be NULL");
+            _writerFallBack = new EventWriterHolder(EventLevel.Debug, writer);
         }
 
         /// <summary>
@@ -77,10 +77,10 @@ namespace BlackBox
         public virtual void Write(EventMessage message)
         {
             if (message == null) return;
+            if (message.Level == EventLevel.Debug && !Debugger.IsAttached) return;
             for (int i = 0; i < _writers.Count; i++)
             {
-                if (!_writers[i].Level.HasFlag(message.Severity)) continue;
-                if (message.Severity.HasFlag(EventLevel.Debug) && !Debugger.IsAttached) continue;
+                if (_writers[i].Level < message.Level) continue;
                 try
                 {
                     _writers[i].Write(message);
@@ -89,19 +89,17 @@ namespace BlackBox
                 {
                     if (_writerFallBack != null)
                     {
-                        _writerFallBack.Write(message);
-                        _writerFallBack.Write(exception.ToMessage());
+                        try
+                        {
+                            _writerFallBack.Write(message);
+                            _writerFallBack.Write(exception.ToMessage());
+                        }
+                        catch { }
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Write custom event
-        /// </summary>
-        /// <param name="severity">Event level</param>
-        /// <param name="message">Message</param>
-        /// <param name="service">Service</param>
         //public void Write(EventLevel severity, string message, [CallerMemberName]string service = "")
         //{
         //    if (String.IsNullOrEmpty(service))

@@ -20,16 +20,12 @@
  * IN THE SOFTWARE.
 */
 
-//namespace BlackBox
-//{
-//    using System;
-
-//    [Flags]
-//    public enum LogLevel : EventLevel
-//    {
-//        /// <summary>
-//        /// No log entry.
-//        /// </summary>
-//        None        = 0,
-//    }
-//}
+namespace BlackBox.Writers
+{
+    public class EventNullWriter
+    {
+        public static void Write(EventMessage message)
+        {
+        }
+    }
+}

@@ -2,6 +2,30 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>2.0.0</Version>
+    <Authors>Lambert van Lieshout</Authors>
+    <Company>YUMMO Software Development</Company>
+    <Product>BlackBox Even Log Framework</Product>
+    <Copyright>YUMMO © 2020</Copyright>
+    <PackageProjectUrl>https://github.com/lvlieshout/blackbox</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lvlieshout/blackbox</RepositoryUrl>
+    <PackageTags>log, event</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>AE-35 Unit.png</PackageIcon>
+    <PackageIconUrl />
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Projecten\BlackBox\BlackBox\BlackBox.xml</DocumentationFile>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\AE-35 Unit.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
