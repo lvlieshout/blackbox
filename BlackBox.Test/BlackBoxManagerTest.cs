@@ -33,6 +33,8 @@
             var queueWriter = new EventQueueWriter();
             logger.RegisterWriter(EventLevel.Critical, queueWriter.Write);
 
+            logger.RegisterWriter(EventLevel.Error, t => { Console.WriteLine(t.Content); })
+
             logger.Write(new EventMessage(EventLevel.Debug, "Hello Debug World!"));
             logger.Write(new EventMessage(EventLevel.Trace, "Hello Trace World!"));
             logger.Write(new EventMessage(EventLevel.Info, "Hello Info World!"));

@@ -14,6 +14,9 @@
     <PackageIcon>AE-35 Unit.png</PackageIcon>
     <PackageIconUrl />
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <PackageId>BlackBoxEventLogFramework</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>BlackBox Even Log Framework</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
