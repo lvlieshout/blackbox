@@ -25,9 +25,12 @@ The manager handles all the events to be written to the right writer. Uses a fal
 The EventWriter handles how the events are persist e.g. database, file or console.
 
 Below describes the details. But it is very simple:
-Log.Trace("Hello world.");
 
-##Below here is work in progres:
+```
+Log.Trace("Hello world.");
+```
+
+## Below here is work in progres:
 
 Set up the manager:
 ```
