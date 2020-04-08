@@ -50,11 +50,11 @@ namespace System
             _manager = manager ?? throw new ArgumentNullException(nameof(manager), "Manager parameter cannot be NULL.");
         }
 
-        private static string GetCallingMethod(int index = 2)
-        {
-            MethodBase method = new StackTrace().GetFrame(index).GetMethod();
-            return String.Concat(method.ReflectedType.FullName, ".", method.Name);
-        }
+        //private static string GetCallingMethod(int index = 2)
+        //{
+        //    MethodBase method = new StackTrace().GetFrame(index).GetMethod();
+        //    return String.Concat(method.ReflectedType.FullName, ".", method.Name);
+        //}
 
         /// <summary>
         /// Write a critical event to the logger.

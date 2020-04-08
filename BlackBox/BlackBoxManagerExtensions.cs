@@ -8,6 +8,22 @@
     public static class BlackBoxManagerExtensions
     {
         /// <summary>
+        /// Add Microsot SQL Server writer to the manager.
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="level"></param>
+        /// <param name="connectionString"></param>
+        /// <param name="application"></param>
+        /// <param name="keepConnectionOpen"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static BlackBoxManager AddTSqlWriter(this BlackBoxManager manager, string connectionString, EventLevel level = EventLevel.Info, string application = "", bool keepConnectionOpen = false, string tableName = "BlackBox")
+        {
+            manager.RegisterWriter(level, new EventTSqlWriter(connectionString, application, keepConnectionOpen, tableName).Write);
+            return manager;
+        }
+
+        /// <summary>
         /// Add event file writer to the manager.
         /// </summary>
         /// <param name="manager"></param>

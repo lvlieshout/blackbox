@@ -89,25 +89,5 @@ namespace BlackBox.Writers
                 message.Content,
                 Environment.NewLine);
         }
-
-        // /// <summary>
-        // /// Create event writer from config settings using the following app settings entities: FileLogName, FileLogPath, FileLogLevel and FileLogMaxSize.
-        // /// </summary>
-        // /// <param name="manager">BlackBox manager to register the writer.</param>
-        // /// <returns>Created and registered EventFileWriter.</returns>
-        //public static EventFileWriter RegisterFromConfig(BlackBoxManager manager)
-        //{
-        //    if (ConfigurationManager.AppSettings["FileLogName"] == null) throw new ArgumentNullException("File logname is not set in configuration");
-        //    if (ConfigurationManager.AppSettings["FileLogPath"] == null) throw new ArgumentNullException("Path of file log is not set in configuration");
-        //    if (ConfigurationManager.AppSettings["FileLogMaxSize"] == null) throw new ArgumentNullException("Max file size log in kilobyte is not set in configuration");
-        //    int size = 0;
-        //    if (!int.TryParse(ConfigurationManager.AppSettings["FileLogMaxSize"], out size))
-        //        throw new ArgumentException("Max file size log is not an integer", "FileLogMaxSize");
-        //    if (ConfigurationManager.AppSettings["FileLogLevel"] == null) throw new ArgumentNullException("EventLog level not set in configuration");
-        //    EventTypes eventLevel = BlackBoxUtilities.GetWriteLevelFromString(ConfigurationManager.AppSettings["FileLogLevel"]);
-        //    EventFileWriter writer = new EventFileWriter(ConfigurationManager.AppSettings["FileLogPath"], ConfigurationManager.AppSettings["FileLogName"], size);
-        //    manager.RegisterWriter(eventLevel, writer.Write);
-        //    return writer;
-        //}
     }
 }

@@ -39,11 +39,11 @@ namespace BlackBox
         /// <summary>
         /// Constructor of EventFileWriter. Set-up database connection and creates data table is not exist.
         /// </summary>
-        /// <param name="application">Application name to filter out when multiple application write to the database.</param>
         /// <param name="connectionString">Connection string to the database</param>
+        /// <param name="application">Application name to filter out when multiple application write to the database.</param>
         /// <param name="keepConnectionOpen">Keep connection open after writing to the database.</param>
         /// <param name="tableName">Table to log into, will be created if not exists.</param>
-        public EventTSqlWriter(string application, string connectionString, bool keepConnectionOpen = false, string tableName = "BlackBox")
+        public EventTSqlWriter(string connectionString, string application = "", bool keepConnectionOpen = false, string tableName = "BlackBox")
         {
             if (String.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString), "Connection string cannot be NULL or empty.");
             if (String.IsNullOrEmpty(tableName)) throw new ArgumentNullException(nameof(tableName), "Table name cannot be NULL or empty.");
@@ -65,14 +65,14 @@ namespace BlackBox
             using (SqlCommand command = new SqlCommand())
             {
                 command.Connection = _connection;
-                //command.CommandText = "INSERT INTO [BlackBox]([EventType],[Host],[TimeStamp],[Service],[Parameters],[Data],[Thread],[Application]) VALUES (@EventType,@Host,@TimeStamp,@Service,@Parameters,@Data,@Thread,@Application)";
+#pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.CommandText = "INSERT INTO [" + _tableName + "]([EventType],[TimeStamp],[Source],[Content],[Application]) VALUES (@EventType,@TimeStamp,@Source,@Content,@Application)";
+#pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.Parameters.Add("EventType", SqlDbType.SmallInt).Value = (short)message.Level;
                 //command.Parameters.Add("Host", SqlDbType.VarChar, 255).Value = message.Host;
                 command.Parameters.Add("TimeStamp", SqlDbType.DateTime).Value = message.TimeStamp;
                 command.Parameters.Add("Source", SqlDbType.VarChar, 255).Value = message.Source;
                 command.Parameters.Add("Content", SqlDbType.VarChar).Value = message.Content;
-                //command.Parameters.Add("Thread", SqlDbType.VarChar, 255).Value = message.Thread;
                 command.Parameters.Add("Application", SqlDbType.VarChar, 255).Value = _application;
                 if (command.ExecuteNonQuery() != 1) throw new Exception("BlackBox.Write : Error writing to black box database table");
             }
@@ -89,34 +89,20 @@ namespace BlackBox
             using (SqlCommand command = new SqlCommand())
             {
                 command.Connection = _connection;
-                command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'BlackBox'";
+                command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName";
+                command.Parameters.Add("TableName", SqlDbType.NVarChar).Value = _tableName;
                 object o = command.ExecuteScalar();
                 if (o is int) tableCount = (int)o;
                 if (tableCount == 0)
                 {
-                    //command.CommandText = "CREATE TABLE [dbo].[BlackBox] ([EventId] bigint IDENTITY(1, 1) NOT NULL,[EventType] smallint NOT NULL,[Host] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL DEFAULT (host_name()),[TimeStamp] datetime NOT NULL DEFAULT (getdate()),[Service] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Parameters] varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,[Data] varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Thread] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS,[Application] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS,CONSTRAINT [PK__BlackBox__0CBAE877] PRIMARY KEY NONCLUSTERED ([EventId] ASC) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,IGNORE_DUP_KEY = OFF,STATISTICS_NORECOMPUTE = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY]) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
+#pragma warning disable CA2100 // Since the previous query is succesfull executed the name must be valid. Also, tablename should be decided in code, not user input. 
                     command.CommandText = "CREATE TABLE [dbo].[" + _tableName + "] ([EventId] bigint IDENTITY(1, 1) NOT NULL,[EventType] smallint NOT NULL,[Host] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL DEFAULT (host_name()),[TimeStamp] datetime NOT NULL DEFAULT (getdate()),[Source] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Content] varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Application] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS,CONSTRAINT [PK__BlackBox__0CBAE877] PRIMARY KEY NONCLUSTERED ([EventId] ASC) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,IGNORE_DUP_KEY = OFF,STATISTICS_NORECOMPUTE = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY]) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
+#pragma warning restore CA2100 // Since the previous query is succesfull executed the name must be valid. Also, tablename should be decided in code, not user input.
                     command.ExecuteNonQuery();
                 }
             }
             if (!_keepConnectionOpen) _connection.Close();
         }
-
-        ///// <summary>
-        ///// Create event writer from config settings using the following app settings entities: TSqlLogApplication, TSqlLogLevel and BlackBoxConnection as connectionstring.
-        ///// </summary>
-        ///// <param name="manager">BlackBox manager to register the writer.</param>
-        ///// <returns>Created and registered EventTSqlWriter.</returns>
-        //public static EventTSqlWriter RegisterFromConfig(BlackBoxManager manager)
-        //{
-        //    if (ConfigurationManager.AppSettings["TSqlLogApplication"] == null) throw new ArgumentNullException("Application not set in configuration");
-        //    if (ConfigurationManager.ConnectionStrings["BlackBoxConnection"] == null) throw new ArgumentNullException("Database connection string not set in configuration");
-        //    if (ConfigurationManager.AppSettings["TSqlLogLevel"] == null) throw new ArgumentNullException("EventLog level not set in configuration");
-        //    EventTypes eventLevel = BlackBoxUtilities.GetWriteLevelFromString(ConfigurationManager.AppSettings["TSqlLogLevel"]);
-        //    EventTSqlWriter writer = new EventTSqlWriter(ConfigurationManager.AppSettings["TSqlLogApplication"], ConfigurationManager.ConnectionStrings["BlackBoxConnection"].ConnectionString);
-        //    manager.RegisterWriter(eventLevel, writer.Write);
-        //    return writer;
-        //}
 
         /// <summary>
         /// Dispose EventTSqlWriter. Closes the database connection if open.

@@ -84,7 +84,7 @@ namespace BlackBox
         }
 
         /// <summary>
-        /// Converts dictionary entries into tring format. Format used is: @key="value";@key2=222;
+        /// Converts dictionary entries into string format. Format used is: @key="value";@key2=222;
         /// </summary>
         /// <param name="parameters">Parameters.</param>
         /// <returns>Parameters in string format.</returns>
