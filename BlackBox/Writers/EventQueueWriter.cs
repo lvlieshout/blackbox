@@ -27,26 +27,26 @@ namespace BlackBox.Writers
     /// <summary>
     /// Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
     /// </summary>
-    public class EventQueueWriter
+    public class EventQueueWriter : IEventWriter
     {
         /// <summary>
         /// Queue of written event messages.
         /// </summary>
-        public ConcurrentQueue<EventMessage> Messages { get; protected set; }
+        public ConcurrentQueue<IEventMessage> Messages { get; protected set; }
 
         /// <summary>
         /// Constructor of the EventQueueWriter.
         /// </summary>
         public EventQueueWriter()
         {
-            Messages = new ConcurrentQueue<EventMessage>();
+            Messages = new ConcurrentQueue<IEventMessage>();
         }
 
         /// <summary>
         /// Write an event message to the EventMessages queue.
         /// </summary>
         /// <param name="message">EventMessage</param>
-        public virtual void Write(EventMessage message)
+        public virtual void Write(IEventMessage message)
         {
             Messages.Enqueue(message);
         }

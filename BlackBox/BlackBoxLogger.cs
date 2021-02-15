@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2021 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,46 +20,29 @@
  * IN THE SOFTWARE.
 */
 
-namespace System
+namespace BlackBox
 {
+    using System;
     using System.Diagnostics;
     using System.Runtime.CompilerServices;
-    using System.Threading;
-    using BlackBox;
-    using BlackBox.Writers;
 
     /// <summary>
-    /// Static holder for a BlackBox manager instance. Use SetManager to assign an manager.
+    /// Logger instance.
     /// </summary>
-    public static class Log
+    public class BlackBoxLogger : IBlackBoxLogger
     {
-        private static IBlackBoxManager _manager;
-
-        static Log()
-        {
-            _manager = new BlackBoxManager();
-            _manager.RegisterWriter(EventLevel.Critical, new EventNullWriter().Write);
-        }
+        /// <summary>
+        /// BlackBox manager used for processing event messages.
+        /// </summary>
+        protected readonly IBlackBoxManager _manager;
 
         /// <summary>
-        /// Set an BlackBoxManager instace.
+        /// Logger instance
         /// </summary>
-        /// <param name="manager">BlackBoxManager</param>
-        public static void SetManager(IBlackBoxManager manager)
+        /// <param name="manager"></param>
+        public BlackBoxLogger(IBlackBoxManager manager)
         {
-            _manager = manager ?? throw new ArgumentNullException(nameof(manager), "Manager parameter cannot be NULL.");
-
-            IBlackBoxManager previous = Interlocked.Exchange(ref _manager, manager);
-            if (previous is IDisposable) (previous as IDisposable).Dispose();
-        }
-
-        /// <summary>
-        /// Return the log manager instance in this holder.
-        /// </summary>
-        /// <returns>BlackBox manager instance</returns>
-        public static IBlackBoxManager GetManager()
-        {
-            return _manager;
+            _manager = manager ?? throw new ArgumentNullException(nameof(manager), "Log manager cannot be NULL.");
         }
 
         /// <summary>
@@ -70,7 +53,7 @@ namespace System
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Critical(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public void Critical(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             _manager.Write(new EventMessage(EventLevel.Critical, content, memberName, sourceFilePath, sourceLineNumber));
         }
@@ -80,7 +63,7 @@ namespace System
         /// </summary>
         /// <param name="exception">Exception data used for the event message.</param>
         [DebuggerStepThrough]
-        public static void Critical(Exception exception)
+        public void Critical(Exception exception)
         {
             _manager.Write(exception.ToMessage(EventLevel.Critical));
         }
@@ -93,7 +76,7 @@ namespace System
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Debug(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public void Debug(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             _manager.Write(new EventMessage(EventLevel.Debug, content, memberName, sourceFilePath, sourceLineNumber));
         }
@@ -106,7 +89,7 @@ namespace System
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Error(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public void Error(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             _manager.Write(new EventMessage(EventLevel.Error, content, memberName, sourceFilePath, sourceLineNumber));
         }
@@ -116,7 +99,7 @@ namespace System
         /// </summary>
         /// <param name="exception">Exception data used for the event message.</param>
         [DebuggerStepThrough]
-        public static void Error(Exception exception)
+        public void Error(Exception exception)
         {
             _manager.Write(exception.ToMessage());
         }
@@ -129,7 +112,7 @@ namespace System
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Trace(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public void Trace(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             _manager.Write(new EventMessage(EventLevel.Trace, content, memberName, sourceFilePath, sourceLineNumber));
         }
@@ -142,7 +125,7 @@ namespace System
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Warning(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public void Warning(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             _manager.Write(new EventMessage(EventLevel.Warning, content, memberName, sourceFilePath, sourceLineNumber));
         }

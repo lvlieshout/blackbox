@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2012 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,44 +23,27 @@
 namespace BlackBox
 {
     /// <summary>
-    /// Event write delegate.
+    /// Black Box Manager. Handles log writing on same thread.
     /// </summary>
-    /// <param name="message"></param>
-    public delegate void EventWriter(IEventMessage message);
-
-    /// <summary>
-    /// Holder class for event writers and level when to trigger the writer.
-    /// </summary>
-    public class EventWriterHolder : IEventWriterHolder
+    public interface IBlackBoxManager
     {
         /// <summary>
-        /// Constructor of EventWriteHolder.
+        /// Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
         /// </summary>
-        /// <param name="level">Level when to trigger the event writer.</param>
-        /// <param name="write">Event writer method.</param>
-        public EventWriterHolder(EventLevel level, EventWriter write)
-        {
-            Level = level;
-            Write = write;
-        }
+        /// <param name="writer">Event writer delegate.</param>
+        void RegisterFallbackWriter(EventWriter writer);
 
         /// <summary>
-        /// Gets level when to trigger the event writer.
+        /// Register a event writer which will be triggered at given level.
         /// </summary>
-        public EventLevel Level { get; private set; }
+        /// <param name="minimumLevel">Event level to trigger the writer.</param>
+        /// <param name="writer">Event writer delegate.</param>
+        void RegisterWriter(EventLevel minimumLevel, EventWriter writer);
 
         /// <summary>
-        /// Gets event writer method.
+        /// Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.
         /// </summary>
-        public EventWriter Write { get; private set; }
-
-        /// <summary>
-        /// Level and type of writer.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Concat(Level.ToString(), ": ", Write.GetType().Name);
-        }
+        /// <param name="message">Event message to write</param>
+        void Write(IEventMessage message);
     }
 }

@@ -1,0 +1,767 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlackBox</name>
+    </assembly>
+    <members>
+        <member name="T:BlackBox.BlackBoxLogger">
+            <summary>
+            Logger instance.
+            </summary>
+        </member>
+        <member name="F:BlackBox.BlackBoxLogger._manager">
+            <summary>
+            BlackBox manager used for processing event messages.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.#ctor(BlackBox.IBlackBoxManager)">
+            <summary>
+            Logger instance
+            </summary>
+            <param name="manager"></param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Critical(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a critical event to the logger.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Critical(System.Exception)">
+            <summary>
+            Write a event marked as critical.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Debug(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as debug.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Error(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Error(System.Exception)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Trace(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as trace.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxLogger.Warning(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as warning.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="T:BlackBox.BlackBoxManager">
+            <summary>
+            Black Box Manager. Handles log writing on same thread.
+            </summary>
+        </member>
+        <member name="F:BlackBox.BlackBoxManager._writers">
+            <summary>
+            Collection of event writers. These will all be used when for event writing.
+            </summary>
+        </member>
+        <member name="F:BlackBox.BlackBoxManager._writerFallBack">
+            <summary>
+            Fallback event writer. This will be used when a primary event writer throws an exception.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManager.#ctor">
+            <summary>
+            Constructor of the event logger.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManager.RegisterWriter(BlackBox.EventLevel,BlackBox.EventWriter)">
+            <summary>
+            Register a event writer which will be triggered at given level.
+            </summary>
+            <param name="minimumLevel">Event level to trigger the writer.</param>
+            <param name="writer">Event writer delegate.</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxManager.RegisterFallbackWriter(BlackBox.EventWriter)">
+            <summary>
+            Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
+            </summary>
+            <param name="writer">Event writer delegate.</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxManager.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.
+            </summary>
+            <param name="message">Event message to write</param>
+        </member>
+        <member name="T:BlackBox.BlackBoxManagerExtensions">
+            <summary>
+            Extension methods to quickly set up logging.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerExtensions.AddTSqlWriter(BlackBox.IBlackBoxManager,System.String,BlackBox.EventLevel,System.String,System.Boolean,System.String)">
+            <summary>
+            Add Microsot SQL Server writer to the manager.
+            </summary>
+            <param name="manager"></param>
+            <param name="level"></param>
+            <param name="connectionString"></param>
+            <param name="application"></param>
+            <param name="keepConnectionOpen"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerExtensions.AddFileWriter(BlackBox.IBlackBoxManager,BlackBox.EventLevel,System.String,System.String,System.Int32)">
+            <summary>
+            Add event file writer to the manager.
+            </summary>
+            <param name="manager"></param>
+            <param name="level"></param>
+            <param name="path"></param>
+            <param name="name"></param>
+            <param name="maxSizeInKB"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerExtensions.AddFileFallbackWriter(BlackBox.IBlackBoxManager,System.String,System.String,System.Int32)">
+            <summary>
+            Add event file fallback writer to the manager.
+            </summary>
+            <param name="manager"></param>
+            <param name="path"></param>
+            <param name="name"></param>
+            <param name="maxSizeInKB"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerExtensions.AddConsoleWriter(BlackBox.IBlackBoxManager,BlackBox.EventLevel)">
+            <summary>
+            Add event console writer to the manager.
+            </summary>
+            <param name="manager"></param>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerExtensions.AddConsoleFallbackWriter(BlackBox.IBlackBoxManager)">
+            <summary>
+            Add event console fallback writer to the manager.
+            </summary>
+            <param name="manager"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BlackBox.BlackBoxManagerThreaded">
+            <summary>
+            Black Box Manager. Handles log writing in a seperate background thread.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerThreaded.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Constructor of the event logger. Starts a new thread for writing events.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerThreaded.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write event message. Use fallback event writer when primairy writer throws an exception. This write method queues uo the event. A seperate thread writes the event.
+            </summary>
+            <param name="message">Event message to write</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerThreaded.Writer">
+            <summary>
+            Event writer running in a seperate thread. Blocked through an AutoResetEvent.
+            </summary>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerThreaded.ProcessExit(System.Object,System.EventArgs)">
+            <summary>
+            Triggers when application proccess is stopped and call Dispose.
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">EventArgs</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxManagerThreaded.Dispose">
+            <summary>
+            Dispose BlackBoxManagerThreaded. Empty queue and ends writer thread.
+            </summary>
+        </member>
+        <member name="T:BlackBox.EventLevel">
+            <summary>
+            Event levels, defines the severity of an event. Also used to inducate the minimum level to log.
+            Excellent explanation of levels: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Critical">
+            <summary>
+            Critical/Fatal. Use when something happens which terminates the application. Direct attention is needed.
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Error">
+            <summary>
+            Error. An exception has happend but the application can continue to run.
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Warning">
+            <summary>
+            Warning. Something goes wrong but does not need direct attention. The application can recover itself.
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Info">
+            <summary>
+            Info. Informational for normal activity.
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Trace">
+            <summary>
+            Trace. Detailed info about the path and context of the application's going.
+            </summary>
+        </member>
+        <member name="F:BlackBox.EventLevel.Debug">
+            <summary>
+            Debug. Very detailed info only activated in debug modus/debugger attached.
+            </summary>
+        </member>
+        <member name="T:BlackBox.EventMessage">
+            <summary>
+            Data transfer object holding an event message
+            </summary>
+        </member>
+        <member name="P:BlackBox.EventMessage.Level">
+            <summary>
+            Event severity level.
+            </summary>
+        </member>
+        <member name="P:BlackBox.EventMessage.TimeStamp">
+            <summary>
+            Time stamp of the event happend.
+            </summary>
+        </member>
+        <member name="P:BlackBox.EventMessage.Source">
+            <summary>
+            Source e.g. namespace and method.
+            </summary>
+        </member>
+        <member name="P:BlackBox.EventMessage.Content">
+            <summary>
+            Content
+            </summary>
+        </member>
+        <member name="M:BlackBox.EventMessage.#ctor(BlackBox.EventLevel,System.String,System.String)">
+            <summary>
+            Construct event message with current timestamp.
+            </summary>
+            <param name="level">Severity level</param>
+            <param name="content">Content</param>
+            <param name="source">Source</param>
+        </member>
+        <member name="M:BlackBox.EventMessage.#ctor(BlackBox.EventLevel,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Construct event message with current timestamp and reference source file.
+            </summary>
+            <param name="level">Severity level</param>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.EventMessage.ToString">
+            <summary>
+            Formats message to a string.
+            </summary>
+            <returns>Formatted event message.</returns>
+        </member>
+        <member name="T:BlackBox.EventMessageExtensions">
+            <summary>
+            Extension methods and other helpers for BlackBox Event Logger.
+            </summary>
+        </member>
+        <member name="M:BlackBox.EventMessageExtensions.ToMessage(System.Exception,BlackBox.EventLevel)">
+            <summary>
+            Converts exception into a event message.
+            </summary>
+            <param name="exception">Exception to convert.</param>
+            <param name="level">Event level.</param>
+            <returns>Event message</returns>
+        </member>
+        <member name="M:BlackBox.EventMessageExtensions.ToStringEx(System.Exception)">
+            <summary>
+            Converts exception to a formatted string.
+            </summary>
+            <param name="exception">Exception to convert.</param>
+            <returns>String with exception.</returns>
+        </member>
+        <member name="M:BlackBox.EventMessageExtensions.ToParameterString(System.Collections.IDictionary)">
+            <summary>
+            Converts dictionary entries into string format. Format used is: @key="value";@key2=222;
+            </summary>
+            <param name="parameters">Parameters.</param>
+            <returns>Parameters in string format.</returns>
+        </member>
+        <member name="T:BlackBox.EventWriter">
+            <summary>
+            Event write delegate.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:BlackBox.EventWriterHolder">
+            <summary>
+            Holder class for event writers and level when to trigger the writer.
+            </summary>
+        </member>
+        <member name="M:BlackBox.EventWriterHolder.#ctor(BlackBox.EventLevel,BlackBox.EventWriter)">
+            <summary>
+            Constructor of EventWriteHolder.
+            </summary>
+            <param name="level">Level when to trigger the event writer.</param>
+            <param name="write">Event writer method.</param>
+        </member>
+        <member name="P:BlackBox.EventWriterHolder.Level">
+            <summary>
+            Gets level when to trigger the event writer.
+            </summary>
+        </member>
+        <member name="P:BlackBox.EventWriterHolder.Write">
+            <summary>
+            Gets event writer method.
+            </summary>
+        </member>
+        <member name="M:BlackBox.EventWriterHolder.ToString">
+            <summary>
+            Level and type of writer.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BlackBox.IBlackBoxLogger">
+            <summary>
+            BlackBox logger interface.
+            </summary>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Critical(System.Exception)">
+            <summary>
+            Write a event marked as critical.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Critical(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a critical event to the logger.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Debug(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as debug.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Error(System.Exception)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Error(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Trace(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as trace.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxLogger.Warning(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as warning.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="T:BlackBox.IBlackBoxManager">
+            <summary>
+            Black Box Manager. Handles log writing on same thread.
+            </summary>
+        </member>
+        <member name="M:BlackBox.IBlackBoxManager.RegisterFallbackWriter(BlackBox.EventWriter)">
+            <summary>
+            Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
+            </summary>
+            <param name="writer">Event writer delegate.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxManager.RegisterWriter(BlackBox.EventLevel,BlackBox.EventWriter)">
+            <summary>
+            Register a event writer which will be triggered at given level.
+            </summary>
+            <param name="minimumLevel">Event level to trigger the writer.</param>
+            <param name="writer">Event writer delegate.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxManager.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.
+            </summary>
+            <param name="message">Event message to write</param>
+        </member>
+        <member name="T:BlackBox.IEventMessage">
+            <summary>
+            Data transfer object holding an event message
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventMessage.Level">
+            <summary>
+            Event severity level.
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventMessage.TimeStamp">
+            <summary>
+            Time stamp of the event happend.
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventMessage.Source">
+            <summary>
+            Source e.g. namespace and method.
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventMessage.Content">
+            <summary>
+            Content
+            </summary>
+        </member>
+        <member name="T:BlackBox.Writers.IEventWriter">
+            <summary>
+            Event writer interface
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.IEventWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write method
+            </summary>
+            <param name="message">Message to write.</param>
+        </member>
+        <member name="T:BlackBox.Writers.EventConsoleWriter">
+            <summary>
+            Event writer which outputs to the console.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventConsoleWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write an event message to the console.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:BlackBox.Writers.EventConsoleWriter.FormatMessage(BlackBox.IEventMessage)">
+            <summary>
+            Format EventMessage to a string.
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BlackBox.Writers.EventDataProviderWriter">
+            <summary>
+            Event writer which outputs to .NET data provider.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventDataProviderWriter._connection">
+            <summary>
+            Data provider connection
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventDataProviderWriter._keepConnectionOpen">
+            <summary>
+            Keep connection open. If false then Open eand Close are called at start en and of write.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventDataProviderWriter._application">
+            <summary>
+            Value for application column.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventDataProviderWriter._tableName">
+            <summary>
+            Data table to write into, default is BlackBox.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.#ctor(System.Data.IDbConnection,System.String,System.Boolean,System.String)">
+            <summary>
+            Constructor of EventFileWriter. Set-up database connection and creates data table is not exist.
+            </summary>
+            <param name="connection">Connection to the data store.</param>
+            <param name="application">Application name to filter out when multiple application write to the database.</param>
+            <param name="keepConnectionOpen">Keep connection open after writing to the database.</param>
+            <param name="tableName">Table to log into, will be created if not exists.</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write an event message to Microsoft SQL Server.
+            </summary>
+            <param name="message">EventMessage</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.CreateTable">
+            <summary>
+            Checks if log table exist in the database. If not then it will be created.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.Dispose">
+            <summary>
+            Dispose EventTSqlWriter. Closes the database connection if open.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.CreateParameter(System.Data.IDbCommand,System.String,System.String,System.Int32)">
+            <summary>
+            Create parameter for data provider
+            </summary>
+            <param name="command"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.CreateParameterInt16(System.Data.IDbCommand,System.String,System.Int16)">
+            <summary>
+            Create parameter for data provider
+            </summary>
+            <param name="command"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BlackBox.Writers.EventDataProviderWriter.CreateParameter(System.Data.IDbCommand,System.String,System.DateTime)">
+            <summary>
+            Create parameter for data provider
+            </summary>
+            <param name="command"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BlackBox.Writers.EventFileWriter">
+            <summary>
+            Event writer which outputs to an file.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventFileWriter.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Constructor of EventFileWriter.
+            </summary>
+            <param name="path">Path where to write the log files. If it's empty then the application directory will be used.</param>
+            <param name="name">Name prefix of the log file.</param>
+            <param name="maxSizeInKB">Max file size in kilobytes.</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventFileWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write an event message to a log file.
+            </summary>
+            <param name="message">EventMessage</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventFileWriter.FormatMessage(BlackBox.IEventMessage)">
+            <summary>
+            Format event message for text writer.
+            </summary>
+            <param name="message">Event message to format</param>
+            <returns>Formatted string of the event message</returns>
+        </member>
+        <member name="T:BlackBox.Writers.EventNullWriter">
+            <summary>
+            An writer object which not writes.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventNullWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Does noting but just accept the message en continues.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:BlackBox.Writers.EventQueueWriter">
+            <summary>
+            Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
+            </summary>
+        </member>
+        <member name="P:BlackBox.Writers.EventQueueWriter.Messages">
+            <summary>
+            Queue of written event messages.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventQueueWriter.#ctor">
+            <summary>
+            Constructor of the EventQueueWriter.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventQueueWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write an event message to the EventMessages queue.
+            </summary>
+            <param name="message">EventMessage</param>
+        </member>
+        <member name="T:BlackBox.Writers.EventTSqlWriter">
+            <summary>
+            Event writer which outputs to Microsoft SQL Server.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventTSqlWriter._connection">
+            <summary>
+            Sql Connection
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventTSqlWriter._keepConnectionOpen">
+            <summary>
+            Keep connection open. If false then Open eand Close are called at start en and of write.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventTSqlWriter._application">
+            <summary>
+            Value for application column.
+            </summary>
+        </member>
+        <member name="F:BlackBox.Writers.EventTSqlWriter._tableName">
+            <summary>
+            Data table to write into, default is BlackBox.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventTSqlWriter.#ctor(System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Constructor of EventFileWriter. Set-up database connection and creates data table is not exist.
+            </summary>
+            <param name="connectionString">Connection string to the database</param>
+            <param name="application">Application name to filter out when multiple application write to the database.</param>
+            <param name="keepConnectionOpen">Keep connection open after writing to the database.</param>
+            <param name="tableName">Table to log into, will be created if not exists.</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventTSqlWriter.Write(BlackBox.IEventMessage)">
+            <summary>
+            Write an event message to Microsoft SQL Server.
+            </summary>
+            <param name="message">EventMessage</param>
+        </member>
+        <member name="M:BlackBox.Writers.EventTSqlWriter.CreateTable">
+            <summary>
+            Checks if log table exist in the database. If not then it will be created.
+            </summary>
+        </member>
+        <member name="M:BlackBox.Writers.EventTSqlWriter.Dispose">
+            <summary>
+            Dispose EventTSqlWriter. Closes the database connection if open.
+            </summary>
+        </member>
+        <member name="T:BlackBox.IEventWriterHolder">
+            <summary>
+            Holder class for event writers and level when to trigger the writer.
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventWriterHolder.Level">
+            <summary>
+            Gets level when to trigger the event writer.
+            </summary>
+        </member>
+        <member name="P:BlackBox.IEventWriterHolder.Write">
+            <summary>
+            Gets event writer method.
+            </summary>
+        </member>
+        <member name="T:System.Log">
+            <summary>
+            Static holder for a BlackBox manager instance. Use SetManager to assign an manager.
+            </summary>
+        </member>
+        <member name="M:System.Log.SetManager(BlackBox.IBlackBoxManager)">
+            <summary>
+            Set an BlackBoxManager instace.
+            </summary>
+            <param name="manager">BlackBoxManager</param>
+        </member>
+        <member name="M:System.Log.GetManager">
+            <summary>
+            Return the log manager instance in this holder.
+            </summary>
+            <returns>BlackBox manager instance</returns>
+        </member>
+        <member name="M:System.Log.Critical(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a critical event to the logger.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:System.Log.Critical(System.Exception)">
+            <summary>
+            Write a event marked as critical.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:System.Log.Debug(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as debug.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:System.Log.Error(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:System.Log.Error(System.Exception)">
+            <summary>
+            Write a event marked as error.
+            </summary>
+            <param name="exception">Exception data used for the event message.</param>
+        </member>
+        <member name="M:System.Log.Trace(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as trace.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+        <member name="M:System.Log.Warning(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Write a event marked as warning.
+            </summary>
+            <param name="content">Content</param>
+            <param name="memberName">Calling method name</param>
+            <param name="sourceFilePath">Calling source file path</param>
+            <param name="sourceLineNumber">Calling source file line number</param>
+        </member>
+    </members>
+</doc>

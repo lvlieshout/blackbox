@@ -29,24 +29,24 @@ namespace BlackBox
     /// <summary>
     /// Black Box Manager. Handles log writing on same thread.
     /// </summary>
-    public class BlackBoxManager
+    public class BlackBoxManager : IBlackBoxManager
     {
         /// <summary>
         /// Collection of event writers. These will all be used when for event writing.
         /// </summary>
-        protected List<EventWriterHolder>   _writers;
-        
+        protected List<IEventWriterHolder> _writers;
+
         /// <summary>
         /// Fallback event writer. This will be used when a primary event writer throws an exception.
         /// </summary>
-        protected EventWriterHolder         _writerFallBack;
+        protected IEventWriterHolder _writerFallBack;
 
         /// <summary>
         /// Constructor of the event logger.
         /// </summary>
         public BlackBoxManager()
         {
-            _writers = new List<EventWriterHolder>();
+            _writers = new List<IEventWriterHolder>();
         }
 
         /// <summary>
@@ -70,11 +70,26 @@ namespace BlackBox
             _writerFallBack = new EventWriterHolder(EventLevel.Debug, writer);
         }
 
+        ///// <summary>
+        ///// Checks if there is at least one writer which logs on given event level.
+        ///// </summary>
+        ///// <param name="level">Event level to check.</param>
+        ///// <returns>True is there is at least one writer that writers at given level.</returns>
+        //public virtual bool InEnabled(EventLevel level)
+        //{
+        //    if (level == EventLevel.Debug && !Debugger.IsAttached) return false;
+        //    for (int i = 0; i < _writers.Count; i++)
+        //    {
+        //        if (_writers[i].Level < level) return false;
+        //    }
+        //    return true;
+        //}
+
         /// <summary>
         /// Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.
         /// </summary>
         /// <param name="message">Event message to write</param>
-        public virtual void Write(EventMessage message)
+        public virtual void Write(IEventMessage message)
         {
             if (message == null) return;
             if (message.Level == EventLevel.Debug && !Debugger.IsAttached) return;
@@ -99,15 +114,5 @@ namespace BlackBox
                 }
             }
         }
-
-        //public void Write(EventLevel severity, string message, [CallerMemberName]string service = "")
-        //{
-        //    if (String.IsNullOrEmpty(service))
-        //    {
-        //        MethodBase m = new StackTrace().GetFrame(1).GetMethod();
-        //        service = String.Concat(m.ReflectedType.FullName, ".", m.Name);
-        //    }
-        //    Write(new EventMessage(severity, service, message));
-        //}
     }
 }

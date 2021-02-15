@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2021 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,28 +24,27 @@ namespace BlackBox.Writers
 {
     using System;
     using System.Data;
-    using System.Data.SqlClient;
 
     /// <summary>
-    /// Event writer which outputs to Microsoft SQL Server.
+    /// Event writer which outputs to .NET data provider.
     /// </summary>
-    public class EventTSqlWriter : IDisposable, IEventWriter
+    public class EventDataProviderWriter : IDisposable, IEventWriter
     {
         /// <summary>
-        /// Sql Connection
+        /// Data provider connection
         /// </summary>
-        protected readonly SqlConnection _connection;
-        
+        protected readonly IDbConnection _connection;
+
         /// <summary>
         /// Keep connection open. If false then Open eand Close are called at start en and of write.
         /// </summary>
         protected readonly bool _keepConnectionOpen;
-        
+
         /// <summary>
         /// Value for application column.
         /// </summary>
         protected readonly string _application;
-        
+
         /// <summary>
         /// Data table to write into, default is BlackBox.
         /// </summary>
@@ -54,18 +53,17 @@ namespace BlackBox.Writers
         /// <summary>
         /// Constructor of EventFileWriter. Set-up database connection and creates data table is not exist.
         /// </summary>
-        /// <param name="connectionString">Connection string to the database</param>
+        /// <param name="connection">Connection to the data store.</param>
         /// <param name="application">Application name to filter out when multiple application write to the database.</param>
         /// <param name="keepConnectionOpen">Keep connection open after writing to the database.</param>
         /// <param name="tableName">Table to log into, will be created if not exists.</param>
-        public EventTSqlWriter(string connectionString, string application = "", bool keepConnectionOpen = false, string tableName = "BlackBox")
+        public EventDataProviderWriter(IDbConnection connection, string application = "", bool keepConnectionOpen = false, string tableName = "BlackBox")
         {
-            if (String.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString), "Connection string cannot be NULL or empty.");
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection), "Connection cannot be NULL.");
             if (String.IsNullOrEmpty(tableName)) throw new ArgumentNullException(nameof(tableName), "Table name cannot be NULL or empty.");
             _tableName = tableName;
             _application = application;
             _keepConnectionOpen = keepConnectionOpen;
-            _connection = new SqlConnection(connectionString);
             if (_keepConnectionOpen) _connection.Open();
             CreateTable();
         }
@@ -77,19 +75,18 @@ namespace BlackBox.Writers
         public virtual void Write(IEventMessage message)
         {
             if (_connection.State == ConnectionState.Closed) _connection.Open();
-            using (SqlCommand command = new SqlCommand())
+            using (IDbCommand command = _connection.CreateCommand())
             {
                 command.Connection = _connection;
 #pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.CommandText = "INSERT INTO [" + _tableName + "]([EventType],[TimeStamp],[Source],[Content],[Application]) VALUES (@EventType,@TimeStamp,@Source,@Content,@Application)";
 #pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
-                command.Parameters.Add("EventType", SqlDbType.SmallInt).Value = (short)message.Level;
-                //command.Parameters.Add("Host", SqlDbType.VarChar, 255).Value = message.Host;
-                command.Parameters.Add("TimeStamp", SqlDbType.DateTime).Value = message.TimeStamp;
-                command.Parameters.Add("Source", SqlDbType.VarChar, 255).Value = message.Source;
-                command.Parameters.Add("Content", SqlDbType.VarChar).Value = message.Content;
-                command.Parameters.Add("Application", SqlDbType.VarChar, 255).Value = _application;
-                if (command.ExecuteNonQuery() != 1) throw new Exception("BlackBox.Write : Error writing to black box database table");
+                command.Parameters.Add(CreateParameterInt16(command, "EventType", (short)message.Level));
+                command.Parameters.Add(CreateParameter(command, "TimeStamp", message.TimeStamp));
+                command.Parameters.Add(CreateParameter(command, "Source", message.Source, 255));
+                command.Parameters.Add(CreateParameter(command, "Content", message.Content));
+                command.Parameters.Add(CreateParameter(command, "Application", _application, 255));
+                if (command.ExecuteNonQuery() != 1) throw new Exception("BlackBox.Write : Error writing to black box data store table");
             }
             if (!_keepConnectionOpen) _connection.Close();
         }
@@ -101,11 +98,11 @@ namespace BlackBox.Writers
         {
             if (_connection.State == ConnectionState.Closed) _connection.Open();
             int tableCount = 0;
-            using (SqlCommand command = new SqlCommand())
+            using (IDbCommand command = _connection.CreateCommand())
             {
                 command.Connection = _connection;
                 command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName";
-                command.Parameters.Add("TableName", SqlDbType.NVarChar).Value = _tableName;
+                command.Parameters.Add(CreateParameter(command, "TableName", _tableName));
                 object o = command.ExecuteScalar();
                 if (o is int) tableCount = (int)o;
                 if (tableCount == 0)
@@ -129,6 +126,59 @@ namespace BlackBox.Writers
                 if (_connection.State != ConnectionState.Closed) _connection.Close();
                 _connection.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Create parameter for data provider
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        protected static IDbDataParameter CreateParameter(IDbCommand command, string name, string value, int size = 0)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = name;
+            parameter.Value = value;
+            parameter.DbType = DbType.String;
+            parameter.Direction = ParameterDirection.Input;
+            if (size > 0) parameter.Size = size;
+            return parameter;
+        }
+
+        /// <summary>
+        /// Create parameter for data provider
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static IDbDataParameter CreateParameterInt16(IDbCommand command, string name, Int16 value)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = name;
+            parameter.Value = value;
+            parameter.DbType = DbType.Int16;
+            parameter.Direction = ParameterDirection.Input;
+            return parameter;
+        }
+
+        /// <summary>
+        /// Create parameter for data provider
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static IDbDataParameter CreateParameter(IDbCommand command, string name, DateTime value)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = name;
+            parameter.Value = value;
+            parameter.DbType = DbType.DateTime;
+            parameter.Direction = ParameterDirection.Input;
+            return parameter;
         }
     }
 }

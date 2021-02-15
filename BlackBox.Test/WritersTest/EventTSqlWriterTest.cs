@@ -2,13 +2,13 @@
 {
     using System;
     using Xunit;
+    using BlackBox.Writers;
 
     /*
-     * The sql writer is hard to test because it uses a real SQL server. But I want this class be testen.
-     * So I compromise, the test relults are always true. After a clean get from Git it will not fail
-     * at this test. It wil be a manual action to set the connection string. And hopyfullly no one commits
-     * security credentials. This is a risk!
-     * 
+     * The sql writer is hard to test because it uses a real SQL server. But I want this class tested.
+     * So I compromise, the test relults are always true. After a clean get it will not fail
+     * at this test. It wil be a manual action to set the connection string. And hopyfullly no one
+     * commits security credentials. This is a risk!
     */
 
     public class EventTSqlWriterTest

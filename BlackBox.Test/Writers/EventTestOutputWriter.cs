@@ -12,7 +12,7 @@
             _output = output ?? throw new ArgumentNullException(nameof(output));
         }
 
-        public override void Write(EventMessage message)
+        public override void Write(IEventMessage message)
         {
             _output.WriteLine(base.FormatMessage(message));
         }

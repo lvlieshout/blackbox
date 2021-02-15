@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2012 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,45 +22,31 @@
 
 namespace BlackBox
 {
-    /// <summary>
-    /// Event write delegate.
-    /// </summary>
-    /// <param name="message"></param>
-    public delegate void EventWriter(IEventMessage message);
+    using System;
 
     /// <summary>
-    /// Holder class for event writers and level when to trigger the writer.
+    /// Data transfer object holding an event message
     /// </summary>
-    public class EventWriterHolder : IEventWriterHolder
+    public interface IEventMessage
     {
         /// <summary>
-        /// Constructor of EventWriteHolder.
+        /// Event severity level.
         /// </summary>
-        /// <param name="level">Level when to trigger the event writer.</param>
-        /// <param name="write">Event writer method.</param>
-        public EventWriterHolder(EventLevel level, EventWriter write)
-        {
-            Level = level;
-            Write = write;
-        }
+        EventLevel Level { get; }
 
         /// <summary>
-        /// Gets level when to trigger the event writer.
+        /// Time stamp of the event happend.
         /// </summary>
-        public EventLevel Level { get; private set; }
+        DateTime TimeStamp { get; }
 
         /// <summary>
-        /// Gets event writer method.
+        /// Source e.g. namespace and method.
         /// </summary>
-        public EventWriter Write { get; private set; }
+        string Source { get; }
 
         /// <summary>
-        /// Level and type of writer.
+        /// Content
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Concat(Level.ToString(), ": ", Write.GetType().Name);
-        }
+        string Content { get; }
     }
 }
