@@ -533,11 +533,6 @@
             Checks if log table exist in the database. If not then it will be created.
             </summary>
         </member>
-        <member name="M:BlackBox.Writers.EventDataProviderWriter.Dispose">
-            <summary>
-            Dispose EventTSqlWriter. Closes the database connection if open.
-            </summary>
-        </member>
         <member name="M:BlackBox.Writers.EventDataProviderWriter.CreateParameter(System.Data.IDbCommand,System.String,System.String,System.Int32)">
             <summary>
             Create parameter for data provider

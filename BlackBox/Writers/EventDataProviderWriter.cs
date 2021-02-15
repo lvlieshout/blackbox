@@ -28,7 +28,7 @@ namespace BlackBox.Writers
     /// <summary>
     /// Event writer which outputs to .NET data provider.
     /// </summary>
-    public class EventDataProviderWriter : IDisposable, IEventWriter
+    public class EventDataProviderWriter : IEventWriter
     {
         /// <summary>
         /// Data provider connection
@@ -114,18 +114,6 @@ namespace BlackBox.Writers
                 }
             }
             if (!_keepConnectionOpen) _connection.Close();
-        }
-
-        /// <summary>
-        /// Dispose EventTSqlWriter. Closes the database connection if open.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            if (_connection != null)
-            {
-                if (_connection.State != ConnectionState.Closed) _connection.Close();
-                _connection.Dispose();
-            }
         }
 
         /// <summary>
