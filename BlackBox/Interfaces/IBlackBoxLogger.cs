@@ -46,15 +46,6 @@ namespace BlackBox
         void Critical(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
 
         /// <summary>
-        /// Write a event marked as debug.
-        /// </summary>
-        /// <param name="content">Content</param>
-        /// <param name="memberName">Calling method name</param>
-        /// <param name="sourceFilePath">Calling source file path</param>
-        /// <param name="sourceLineNumber">Calling source file line number</param>
-        void Debug(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
-        
-        /// <summary>
         /// Write a event marked as error.
         /// </summary>
         /// <param name="exception">Exception data used for the event message.</param>
@@ -70,15 +61,6 @@ namespace BlackBox
         void Error(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
 
         /// <summary>
-        /// Write a event marked as trace.
-        /// </summary>
-        /// <param name="content">Content</param>
-        /// <param name="memberName">Calling method name</param>
-        /// <param name="sourceFilePath">Calling source file path</param>
-        /// <param name="sourceLineNumber">Calling source file line number</param>
-        void Trace(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
-        
-        /// <summary>
         /// Write a event marked as warning.
         /// </summary>
         /// <param name="content">Content</param>
@@ -86,5 +68,32 @@ namespace BlackBox
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         void Warning(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
+
+        /// <summary>
+        /// Write a event marked as informational.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        void Info(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
+
+        /// <summary>
+        /// Write a event marked as trace.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        void Trace(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
+
+        /// <summary>
+        /// Write a event marked as debug.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        void Debug(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
     }
 }

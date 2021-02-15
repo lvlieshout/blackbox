@@ -105,6 +105,19 @@ namespace BlackBox
         }
 
         /// <summary>
+        /// Write a event marked as informational.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        [DebuggerStepThrough]
+        public void Info(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            _manager.Write(new EventMessage(EventLevel.Trace, content, memberName, sourceFilePath, sourceLineNumber));
+        }
+
+        /// <summary>
         /// Write a event marked as trace.
         /// </summary>
         /// <param name="content">Content</param>
