@@ -33,8 +33,4 @@
     <ProjectReference Include="..\BlackBox\BlackBox.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ExtensionsTest\" />
-  </ItemGroup>
-
 </Project>
