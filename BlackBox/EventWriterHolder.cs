@@ -60,7 +60,7 @@ namespace BlackBox
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Concat(Level.ToString(), ": ", Write.GetType().Name);
+            return string.Concat(Level.ToString(), ": ", Write.Target.GetType().Name);
         }
     }
 }
