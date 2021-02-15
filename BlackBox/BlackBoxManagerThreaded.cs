@@ -56,7 +56,7 @@ namespace BlackBox
             _running = true;
             _writeThread = new Thread(new ThreadStart(Writer));
             _writeThread.IsBackground = true;
-            _writeThread.Name = "BlackBoxManager";
+            _writeThread.Name = nameof(BlackBoxManager);
             _writeThread.Start();
         }
 
