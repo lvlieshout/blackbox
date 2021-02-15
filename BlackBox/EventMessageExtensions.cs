@@ -41,27 +41,20 @@ namespace BlackBox
         public static EventMessage ToMessage(this Exception exception, EventLevel level = EventLevel.Error)
         {
             string source;
-            if (exception.Source == null)
+            if (exception.TargetSite != null)
             {
-                if (exception.TargetSite == null)
-                {
-                    MethodBase m = new StackTrace().GetFrame(2).GetMethod();
-                    source = String.Concat(m.ReflectedType.FullName, ".", m.Name);
-                }
-                else
-                {
-                    source = String.Concat(exception.TargetSite.ReflectedType.FullName, ".", exception.TargetSite.Name);
-                }
+                source = String.Concat(exception.TargetSite.ReflectedType.FullName, ".", exception.TargetSite.Name);
             }
-            else
+            else if (exception.Source != null)
             {
                 source = exception.Source;
             }
-            return new EventMessage(level, source, exception.ToStringEx());
-
-            // message.Host = host ?? System.Net.Dns.GetHostName();
-            // message.Thread = String.Concat(System.Threading.Thread.CurrentThread.Name, " (", System.Threading.Thread.CurrentThread.ManagedThreadId, ")");
-            // message.Parameters = ParametersToString(parameters) + ParametersToString(exception.Data);
+            else
+            {
+                MethodBase method = new StackTrace().GetFrame(2).GetMethod();
+                source = String.Concat(method.ReflectedType.FullName, ".", method.Name);
+            }
+            return new EventMessage(level, exception.ToStringFormatted(), source);
         }
 
         /// <summary>
@@ -69,16 +62,19 @@ namespace BlackBox
         /// </summary>
         /// <param name="exception">Exception to convert.</param>
         /// <returns>String with exception.</returns>
-        public static string ToStringEx(this Exception exception)
+        public static string ToStringFormatted(this Exception exception)
         {
             string result = "";
             result += "Exception: " + exception.Message;
-            result += "\r\nHelplink: " + exception.HelpLink;
+            if (!String.IsNullOrEmpty(exception.HelpLink))
+            {
+                result += "\r\nHelplink: " + exception.HelpLink;
+            }
             result += "\r\nSource: " + exception.Source;
             result += "\r\nStackTrace:\r\n" + exception.StackTrace;
             if (exception.InnerException != null)
             {
-                result = String.Concat(result, "\r\n\r\nInner exception:\r\n", exception.InnerException.ToStringEx());
+                result = String.Concat(result, "\r\n\r\nInner exception:\r\n", exception.InnerException.ToStringFormatted());
             }
             return result;
         }

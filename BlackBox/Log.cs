@@ -86,19 +86,6 @@ namespace System
         }
 
         /// <summary>
-        /// Write a event marked as debug.
-        /// </summary>
-        /// <param name="content">Content</param>
-        /// <param name="memberName">Calling method name</param>
-        /// <param name="sourceFilePath">Calling source file path</param>
-        /// <param name="sourceLineNumber">Calling source file line number</param>
-        [DebuggerStepThrough]
-        public static void Debug(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
-        {
-            _manager.Write(new EventMessage(EventLevel.Debug, content, memberName, sourceFilePath, sourceLineNumber));
-        }
-
-        /// <summary>
         /// Write a event marked as error.
         /// </summary>
         /// <param name="content">Content</param>
@@ -122,6 +109,32 @@ namespace System
         }
 
         /// <summary>
+        /// Write a event marked as warning.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        [DebuggerStepThrough]
+        public static void Warning(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            _manager.Write(new EventMessage(EventLevel.Warning, content, memberName, sourceFilePath, sourceLineNumber));
+        }
+
+        /// <summary>
+        /// Write a event marked as info.
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="memberName">Calling method name</param>
+        /// <param name="sourceFilePath">Calling source file path</param>
+        /// <param name="sourceLineNumber">Calling source file line number</param>
+        [DebuggerStepThrough]
+        public static void Info(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            _manager.Write(new EventMessage(EventLevel.Info, content, memberName, sourceFilePath, sourceLineNumber));
+        }
+
+        /// <summary>
         /// Write a event marked as trace.
         /// </summary>
         /// <param name="content">Content</param>
@@ -135,16 +148,16 @@ namespace System
         }
 
         /// <summary>
-        /// Write a event marked as warning.
+        /// Write a event marked as debug.
         /// </summary>
         /// <param name="content">Content</param>
         /// <param name="memberName">Calling method name</param>
         /// <param name="sourceFilePath">Calling source file path</param>
         /// <param name="sourceLineNumber">Calling source file line number</param>
         [DebuggerStepThrough]
-        public static void Warning(string content, [CallerMemberName]string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void Debug(string content, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
-            _manager.Write(new EventMessage(EventLevel.Warning, content, memberName, sourceFilePath, sourceLineNumber));
+            _manager.Write(new EventMessage(EventLevel.Debug, content, memberName, sourceFilePath, sourceLineNumber));
         }
     }
 }
