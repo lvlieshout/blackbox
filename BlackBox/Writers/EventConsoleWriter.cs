@@ -27,13 +27,13 @@ namespace BlackBox.Writers
     /// <summary>
     /// Event writer which outputs to the console.
     /// </summary>
-    public class EventConsoleWriter
+    public class EventConsoleWriter : IEventWriter
     {
         /// <summary>
         /// Write an event message to the console.
         /// </summary>
         /// <param name="message"></param>
-        public virtual void Write(EventMessage message)
+        public virtual void Write(IEventMessage message)
         {
             ConsoleColor tempForegroundColor = Console.ForegroundColor;
             ConsoleColor tempBackgroudnColor = Console.BackgroundColor;
@@ -41,13 +41,13 @@ namespace BlackBox.Writers
             Console.BackgroundColor = ConsoleColor.Black;
             switch (message.Level)
             {
-                case EventLevel.Critical:   Console.ForegroundColor = ConsoleColor.Magenta;     break;
-                case EventLevel.Debug:      Console.ForegroundColor = ConsoleColor.DarkGreen;   break;
-                case EventLevel.Error:      Console.ForegroundColor = ConsoleColor.Red;         break;
-                case EventLevel.Trace:      Console.ForegroundColor = ConsoleColor.Gray;        break;
-                case EventLevel.Warning:    Console.ForegroundColor = ConsoleColor.DarkMagenta; break;
-                case EventLevel.Info:       Console.ForegroundColor = ConsoleColor.Gray;        break;
-                default:                    Console.ForegroundColor = ConsoleColor.Gray;        break;
+                case EventLevel.Critical: Console.ForegroundColor = ConsoleColor.Magenta; break;
+                case EventLevel.Debug: Console.ForegroundColor = ConsoleColor.DarkGreen; break;
+                case EventLevel.Error: Console.ForegroundColor = ConsoleColor.Red; break;
+                case EventLevel.Trace: Console.ForegroundColor = ConsoleColor.Gray; break;
+                case EventLevel.Warning: Console.ForegroundColor = ConsoleColor.DarkMagenta; break;
+                case EventLevel.Info: Console.ForegroundColor = ConsoleColor.Gray; break;
+                default: Console.ForegroundColor = ConsoleColor.Gray; break;
             }
             Console.WriteLine(FormatMessage(message));
             Console.ForegroundColor = tempForegroundColor;
@@ -59,7 +59,7 @@ namespace BlackBox.Writers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected virtual string FormatMessage(EventMessage message)
+        protected virtual string FormatMessage(IEventMessage message)
         {
             string output = "[";
             output += message.TimeStamp.ToString("yyyy-mm-dd hh:MM:ss");

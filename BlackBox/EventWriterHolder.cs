@@ -26,12 +26,12 @@ namespace BlackBox
     /// Event write delegate.
     /// </summary>
     /// <param name="message"></param>
-    public delegate void EventWriter(EventMessage message);
+    public delegate void EventWriter(IEventMessage message);
 
     /// <summary>
     /// Holder class for event writers and level when to trigger the writer.
     /// </summary>
-    public class EventWriterHolder
+    public class EventWriterHolder : IEventWriterHolder
     {
         /// <summary>
         /// Constructor of EventWriteHolder.
@@ -53,5 +53,14 @@ namespace BlackBox
         /// Gets event writer method.
         /// </summary>
         public EventWriter Write { get; private set; }
+
+        /// <summary>
+        /// Level and type of writer.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Concat(Level.ToString(), ": ", Write.Target.GetType().Name);
+        }
     }
 }

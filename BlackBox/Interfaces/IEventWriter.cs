@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2012 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,33 +22,15 @@
 
 namespace BlackBox.Writers
 {
-    using System.Collections.Concurrent;
-
     /// <summary>
-    /// Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
+    /// Event writer interface
     /// </summary>
-    public class EventQueueWriter : IEventWriter
+    public interface IEventWriter
     {
         /// <summary>
-        /// Queue of written event messages.
+        /// Write method
         /// </summary>
-        public ConcurrentQueue<IEventMessage> Messages { get; protected set; }
-
-        /// <summary>
-        /// Constructor of the EventQueueWriter.
-        /// </summary>
-        public EventQueueWriter()
-        {
-            Messages = new ConcurrentQueue<IEventMessage>();
-        }
-
-        /// <summary>
-        /// Write an event message to the EventMessages queue.
-        /// </summary>
-        /// <param name="message">EventMessage</param>
-        public virtual void Write(IEventMessage message)
-        {
-            Messages.Enqueue(message);
-        }
+        /// <param name="message">Message to write.</param>
+        void Write(IEventMessage message);
     }
 }

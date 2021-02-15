@@ -4,14 +4,14 @@
 
     public class EventException : Exception
     {
-        public EventMessage EventMessage { get; private set; }
+        public IEventMessage EventMessage { get; private set; }
 
         public EventException()
         {
             EventMessage = new EventMessage(EventLevel.Error, "No message set.", StackTrace);
         }
 
-        public EventException(EventMessage eventMessage)
+        public EventException(IEventMessage eventMessage)
         {
             EventMessage = eventMessage;
         }

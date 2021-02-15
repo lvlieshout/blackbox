@@ -1,6 +1,7 @@
 ﻿namespace BlackBox.Test.WritersTest
 {
     using System;
+    using System.Data.SqlClient;
     using Xunit;
     using BlackBox.Writers;
 
@@ -11,7 +12,7 @@
      * commits security credentials. This is a risk!
     */
 
-    public class EventTSqlWriterTest
+    public class EventDataProviderWriterTest
     {
         private readonly string _connectionString = "Data Source={0};Initial Catalog={1};User Id={2};Password={3}";
 
@@ -20,7 +21,10 @@
         {
             try
             {
-                EventTSqlWriter writer = new EventTSqlWriter(_connectionString, "EventTSqlWriterTest");
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    EventDataProviderWriter writer = new EventDataProviderWriter(connection, "EventDataProviderWriterTest");
+                }
             }
             catch { }
             Assert.True(true);
@@ -31,8 +35,11 @@
         {
             try
             {
-                EventTSqlWriter writer = new EventTSqlWriter(_connectionString, "EventTSqlWriterTest");
-                writer.Write(new EventMessage(EventLevel.Critical, "Hello critical world."));
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    EventDataProviderWriter writer = new EventDataProviderWriter(connection, "EventDataProviderWriterTest");
+                    writer.Write(new EventMessage(EventLevel.Critical, "Hello critical world."));
+                }
             }
             catch { }
             Assert.True(true);

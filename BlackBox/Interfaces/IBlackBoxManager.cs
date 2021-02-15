@@ -20,35 +20,30 @@
  * IN THE SOFTWARE.
 */
 
-namespace BlackBox.Writers
+namespace BlackBox
 {
-    using System.Collections.Concurrent;
-
     /// <summary>
-    /// Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
+    /// Black Box Manager. Handles log writing on same thread.
     /// </summary>
-    public class EventQueueWriter : IEventWriter
+    public interface IBlackBoxManager
     {
         /// <summary>
-        /// Queue of written event messages.
+        /// Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
         /// </summary>
-        public ConcurrentQueue<IEventMessage> Messages { get; protected set; }
+        /// <param name="writer">Event writer delegate.</param>
+        void RegisterFallbackWriter(EventWriter writer);
 
         /// <summary>
-        /// Constructor of the EventQueueWriter.
+        /// Register a event writer which will be triggered at given level.
         /// </summary>
-        public EventQueueWriter()
-        {
-            Messages = new ConcurrentQueue<IEventMessage>();
-        }
+        /// <param name="minimumLevel">Event level to trigger the writer.</param>
+        /// <param name="writer">Event writer delegate.</param>
+        void RegisterWriter(EventLevel minimumLevel, EventWriter writer);
 
         /// <summary>
-        /// Write an event message to the EventMessages queue.
+        /// Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.
         /// </summary>
-        /// <param name="message">EventMessage</param>
-        public virtual void Write(IEventMessage message)
-        {
-            Messages.Enqueue(message);
-        }
+        /// <param name="message">Event message to write</param>
+        void Write(IEventMessage message);
     }
 }

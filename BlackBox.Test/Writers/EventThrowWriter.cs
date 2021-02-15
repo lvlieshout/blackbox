@@ -2,7 +2,7 @@
 {
     public class EventThrowWriter : EventQueueWriter
     {
-        public override void Write(EventMessage message)
+        public override void Write(IEventMessage message)
         {
             base.Write(message);
             throw new EventException(message);

@@ -20,35 +20,33 @@
  * IN THE SOFTWARE.
 */
 
-namespace BlackBox.Writers
+namespace BlackBox
 {
-    using System.Collections.Concurrent;
+    using System;
 
     /// <summary>
-    /// Event queue writer, all items are enqueued into a concurrent queue. And are dequeueable.
+    /// Data transfer object holding an event message
     /// </summary>
-    public class EventQueueWriter : IEventWriter
+    public interface IEventMessage
     {
         /// <summary>
-        /// Queue of written event messages.
+        /// Event severity level.
         /// </summary>
-        public ConcurrentQueue<IEventMessage> Messages { get; protected set; }
+        EventLevel Level { get; }
 
         /// <summary>
-        /// Constructor of the EventQueueWriter.
+        /// Time stamp of the event happend.
         /// </summary>
-        public EventQueueWriter()
-        {
-            Messages = new ConcurrentQueue<IEventMessage>();
-        }
+        DateTime TimeStamp { get; }
 
         /// <summary>
-        /// Write an event message to the EventMessages queue.
+        /// Source e.g. namespace and method.
         /// </summary>
-        /// <param name="message">EventMessage</param>
-        public virtual void Write(IEventMessage message)
-        {
-            Messages.Enqueue(message);
-        }
+        string Source { get; }
+
+        /// <summary>
+        /// Content
+        /// </summary>
+        string Content { get; }
     }
 }

@@ -5,32 +5,57 @@
 
     <IsPackable>false</IsPackable>
 
-    <Version>2.0.0</Version>
+    <Version>2.0.2</Version>
 
     <Authors>Lambert van Lieshout</Authors>
 
     <Company>YUMMO Software Development</Company>
 
-    <Product>BlackBox Even Log Framework</Product>
+    <Product>BlackBox Event Log Framework</Product>
 
-    <Copyright>YUMMO © 2020</Copyright>
+    <Copyright>YUMMO © 2021</Copyright>
 
     <PackageProjectUrl>https://github.com/lvlieshout/blackbox</PackageProjectUrl>
 
     <RepositoryUrl>https://github.com/lvlieshout/blackbox</RepositoryUrl>
 
-    <PackageTags>log, event, test, unit</PackageTags>
+    <PackageTags>log, event, debug, diagnostic, test, unit</PackageTags>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <PackageIcon>AE-35 Unit.png</PackageIcon>
+
+    <PackageId>BlackBoxEventLogFramework Unit Test Project</PackageId>
+
+    <Description>BlackBox Event Log Framework Unit Test Project</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlackBox\BlackBox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ExtensionsTest\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\AE-35 Unit.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -29,7 +29,7 @@ namespace BlackBox.Writers
     /// <summary>
     /// Event writer which outputs to an file.
     /// </summary>
-    public class EventFileWriter
+    public class EventFileWriter : IEventWriter
     {
         private string  _path;
         private string  _name;
@@ -54,7 +54,7 @@ namespace BlackBox.Writers
         /// Write an event message to a log file.
         /// </summary>
         /// <param name="message">EventMessage</param>
-        public void Write(EventMessage message)
+        public void Write(IEventMessage message)
         {
             string rawFilename = Path.Combine(_path, _name + message.TimeStamp.ToString("yyyy-MM-dd")) + " ({0}).txt";
             int n = 0;
@@ -75,7 +75,7 @@ namespace BlackBox.Writers
         /// </summary>
         /// <param name="message">Event message to format</param>
         /// <returns>Formatted string of the event message</returns>
-        protected virtual string FormatMessage(EventMessage message)
+        protected virtual string FormatMessage(IEventMessage message)
         {
             return String.Concat(
                 "-- ",

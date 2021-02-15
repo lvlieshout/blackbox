@@ -33,7 +33,7 @@ namespace BlackBox
     {
         private AutoResetEvent                  _resetEvent;
         private Thread                          _writeThread;
-        private ConcurrentQueue<EventMessage>   _queue;
+        private ConcurrentQueue<IEventMessage>  _queue;
         private bool                            _running;
         private int                             _maxBufferSize;
         private int                             _safeBufferSize;
@@ -49,14 +49,14 @@ namespace BlackBox
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(ProcessExit);
             AppDomain.CurrentDomain.DomainUnload += new EventHandler(ProcessExit);
-            _queue = new ConcurrentQueue<EventMessage>();
+            _queue = new ConcurrentQueue<IEventMessage>();
             _resetEvent = new AutoResetEvent(false);
             _maxBufferSize = maxBufferSize;
             _safeBufferSize = safeBufferSize;
             _running = true;
             _writeThread = new Thread(new ThreadStart(Writer));
             _writeThread.IsBackground = true;
-            _writeThread.Name = "BlackBoxManager";
+            _writeThread.Name = nameof(BlackBoxManager);
             _writeThread.Start();
         }
 
@@ -64,7 +64,7 @@ namespace BlackBox
         /// Write event message. Use fallback event writer when primairy writer throws an exception. This write method queues uo the event. A seperate thread writes the event.
         /// </summary>
         /// <param name="message">Event message to write</param>
-        public override void Write(EventMessage message)
+        public override void Write(IEventMessage message)
         {
             if (_queue.Count > _maxBufferSize) return;
             if (_queue.Count > _safeBufferSize && message.Level <= EventLevel.Error) return;
@@ -80,7 +80,7 @@ namespace BlackBox
             while (_running)
             {
                 _resetEvent.WaitOne();
-                while (_queue.TryDequeue(out EventMessage message))
+                while (_queue.TryDequeue(out IEventMessage message))
                 {
                     base.Write(message);
                 }

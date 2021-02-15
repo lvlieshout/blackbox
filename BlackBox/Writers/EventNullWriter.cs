@@ -25,13 +25,13 @@ namespace BlackBox.Writers
     /// <summary>
     /// An writer object which not writes.
     /// </summary>
-    public static class EventNullWriter
+    public class EventNullWriter : IEventWriter
     {
         /// <summary>
         /// Does noting but just accept the message en continues.
         /// </summary>
         /// <param name="message"></param>
-        public static void Write(EventMessage message)
+        public void Write(IEventMessage message)
         {
         }
     }
