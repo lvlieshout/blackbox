@@ -27,6 +27,13 @@ namespace BlackBox.Writers
     using System.Text;
 
     /// <summary>
+    /// Event message to string formatter
+    /// </summary>
+    /// <param name="message">Message to convert to string.</param>
+    /// <returns>String conversion of an event message.</returns>
+    public delegate string EventMessageFormatter(IEventMessage message);
+
+    /// <summary>
     /// Event writer which outputs to an file.
     /// </summary>
     public class EventFileWriter : IEventWriter
@@ -34,6 +41,11 @@ namespace BlackBox.Writers
         private string  _path;
         private string  _name;
         private int     _maxSizeInKB;
+        
+        /// <summary>
+        /// Set custom message to string formatter.
+        /// </summary>
+        public EventMessageFormatter Formatter { private get; set; }
 
         /// <summary>
         /// Constructor of EventFileWriter.
@@ -47,6 +59,7 @@ namespace BlackBox.Writers
             else _path = path;
             _name = name;
             _maxSizeInKB = maxSizeInKB;
+            Formatter = FormatMessage;
             if (!Directory.Exists(_path)) Directory.CreateDirectory(_path);
         }
 
@@ -67,7 +80,7 @@ namespace BlackBox.Writers
                 fileInfo = new FileInfo(filename);
             }
             while (fileInfo.Exists && fileInfo.Length >= _maxSizeInKB * 1024);
-            File.AppendAllText(filename, FormatMessage(message), Encoding.UTF8);            
+            File.AppendAllText(filename, Formatter(message), Encoding.UTF8);            
         }
 
         /// <summary>

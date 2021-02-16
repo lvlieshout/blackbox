@@ -81,11 +81,11 @@ namespace BlackBox.Writers
 #pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.CommandText = "INSERT INTO [" + _tableName + "]([EventType],[TimeStamp],[Source],[Content],[Application]) VALUES (@EventType,@TimeStamp,@Source,@Content,@Application)";
 #pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
-                command.Parameters.Add(CreateParameterInt16(command, "EventType", (short)message.Level));
-                command.Parameters.Add(CreateParameter(command, "TimeStamp", message.TimeStamp));
-                command.Parameters.Add(CreateParameter(command, "Source", message.Source, 255));
-                command.Parameters.Add(CreateParameter(command, "Content", message.Content));
-                command.Parameters.Add(CreateParameter(command, "Application", _application, 255));
+                command.AddParameter("EventType", (short)message.Level);
+                command.AddParameter("TimeStamp", message.TimeStamp);
+                command.AddParameter("Source", message.Source, 255);
+                command.AddParameter("Content", message.Content);
+                command.AddParameter("Application", _application, 255);
                 if (command.ExecuteNonQuery() != 1) throw new Exception("BlackBox.Write : Error writing to black box data store table");
             }
             if (!_keepConnectionOpen) _connection.Close();
@@ -102,7 +102,7 @@ namespace BlackBox.Writers
             {
                 command.Connection = _connection;
                 command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName";
-                command.Parameters.Add(CreateParameter(command, "TableName", _tableName));
+                command.AddParameter("TableName", _tableName);
                 object o = command.ExecuteScalar();
                 if (o is int) tableCount = (int)o;
                 if (tableCount == 0)
@@ -114,59 +114,6 @@ namespace BlackBox.Writers
                 }
             }
             if (!_keepConnectionOpen) _connection.Close();
-        }
-
-        /// <summary>
-        /// Create parameter for data provider
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        protected static IDbDataParameter CreateParameter(IDbCommand command, string name, string value, int size = 0)
-        {
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = name;
-            parameter.Value = value;
-            parameter.DbType = DbType.String;
-            parameter.Direction = ParameterDirection.Input;
-            if (size > 0) parameter.Size = size;
-            return parameter;
-        }
-
-        /// <summary>
-        /// Create parameter for data provider
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        protected static IDbDataParameter CreateParameterInt16(IDbCommand command, string name, Int16 value)
-        {
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = name;
-            parameter.Value = value;
-            parameter.DbType = DbType.Int16;
-            parameter.Direction = ParameterDirection.Input;
-            return parameter;
-        }
-
-        /// <summary>
-        /// Create parameter for data provider
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        protected static IDbDataParameter CreateParameter(IDbCommand command, string name, DateTime value)
-        {
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = name;
-            parameter.Value = value;
-            parameter.DbType = DbType.DateTime;
-            parameter.Direction = ParameterDirection.Input;
-            return parameter;
         }
     }
 }
