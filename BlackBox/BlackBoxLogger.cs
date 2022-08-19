@@ -37,6 +37,14 @@ namespace BlackBox
         protected readonly IBlackBoxManager _manager;
 
         /// <summary>
+        /// Logger instance, uses the manager set in Log.
+        /// </summary>
+        public BlackBoxLogger()
+        {
+            _manager = Log.GetManager();
+        }
+
+        /// <summary>
         /// Logger instance
         /// </summary>
         /// <param name="manager"></param>
