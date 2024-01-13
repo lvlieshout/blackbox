@@ -82,7 +82,7 @@ namespace BlackBox
         /// <returns>Formatted event message.</returns>
         public override string ToString()
         {
-            return String.Concat(TimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffff"), " ", Level.ToString().ToUpper(), " @ ", Source, ": ", Content);
+            return string.Concat(TimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffff"), " ", Level.ToString().ToUpper(), " @ ", Source, ": ", Content);
         }
     }
 }

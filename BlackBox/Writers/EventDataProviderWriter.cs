@@ -78,9 +78,7 @@ namespace BlackBox.Writers
             using (IDbCommand command = _connection.CreateCommand())
             {
                 command.Connection = _connection;
-#pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.CommandText = "INSERT INTO [" + _tableName + "]([EventType],[TimeStamp],[Source],[Content],[Application]) VALUES (@EventType,@TimeStamp,@Source,@Content,@Application)";
-#pragma warning disable CA2100 // Cannot use parameter for table name. Tablename is already checked in the CreateTable method.
                 command.AddParameter("EventType", (short)message.Level);
                 command.AddParameter("TimeStamp", message.TimeStamp);
                 command.AddParameter("Source", message.Source, 255);
@@ -103,13 +101,14 @@ namespace BlackBox.Writers
                 command.Connection = _connection;
                 command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName";
                 command.AddParameter("TableName", _tableName);
-                object o = command.ExecuteScalar();
-                if (o is int) tableCount = (int)o;
+                object result = command.ExecuteScalar();
+                if (result is int resultInt)
+                {
+                    tableCount = resultInt;
+                }
                 if (tableCount == 0)
                 {
-#pragma warning disable CA2100 // Since the previous query is succesfull executed the name must be valid. Also, tablename should be decided in code, not user input. 
                     command.CommandText = "CREATE TABLE [dbo].[" + _tableName + "] ([EventId] bigint IDENTITY(1, 1) NOT NULL,[EventType] smallint NOT NULL,[Host] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL DEFAULT (host_name()),[TimeStamp] datetime NOT NULL DEFAULT (getdate()),[Source] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Content] varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Application] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS,CONSTRAINT [PK__BlackBox__0CBAE877] PRIMARY KEY NONCLUSTERED ([EventId] ASC) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,IGNORE_DUP_KEY = OFF,STATISTICS_NORECOMPUTE = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY]) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
-#pragma warning restore CA2100 // Since the previous query is succesfull executed the name must be valid. Also, tablename should be decided in code, not user input.
                     command.ExecuteNonQuery();
                 }
             }

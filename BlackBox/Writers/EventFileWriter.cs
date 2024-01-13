@@ -38,9 +38,9 @@ namespace BlackBox.Writers
     /// </summary>
     public class EventFileWriter : IEventWriter
     {
-        private string  _path;
-        private string  _name;
-        private int     _maxSizeInKB;
+        private readonly string _path;
+        private readonly string _name;
+        private readonly int    _maxSizeInKB;
         
         /// <summary>
         /// Set custom message to string formatter.

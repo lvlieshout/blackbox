@@ -49,8 +49,7 @@ namespace System
         {
             if (manager == null) throw new ArgumentNullException(nameof(manager), "Manager parameter cannot be NULL.");
 
-            IBlackBoxManager previous = Interlocked.Exchange(ref _manager, manager);
-            if (previous is IDisposable) (previous as IDisposable).Dispose();
+            Interlocked.Exchange(ref _manager, manager);
         }
 
         /// <summary>

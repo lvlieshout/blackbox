@@ -19,7 +19,6 @@
             Task[] tasks = new Task[threadCount];
             for (int i = 0; i < tasks.Length; i++)
             {
-                
                 tasks[i] = Task.Factory.StartNew((n) =>
                 {
                     logger.Write(new EventMessage(EventLevel.Critical, "Hello Critical World #" + n + " from thread id " + Thread.CurrentThread.ManagedThreadId + "!"));

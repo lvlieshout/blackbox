@@ -31,12 +31,12 @@ namespace BlackBox
     /// </summary>
     public class BlackBoxManagerThreaded : BlackBoxManager, IDisposable
     {
-        private AutoResetEvent                  _resetEvent;
-        private Thread                          _writeThread;
-        private ConcurrentQueue<IEventMessage>  _queue;
-        private bool                            _running;
-        private int                             _maxBufferSize;
-        private int                             _safeBufferSize;
+        private readonly AutoResetEvent                 _resetEvent;
+        private readonly Thread                         _writeThread;
+        private readonly ConcurrentQueue<IEventMessage> _queue;
+        private readonly int                            _maxBufferSize;
+        private readonly int                            _safeBufferSize;
+        private bool                                    _running;
 
         /// <summary>
         /// Constructor of the event logger. Starts a new thread for writing events.

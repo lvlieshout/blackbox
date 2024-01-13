@@ -122,5 +122,39 @@
             Assert.Single(queueWriter1.Messages);
             Assert.Single(queueWriter2.Messages);
         }
+
+        [Fact]
+        public void RemoveWriter()
+        {
+            var logger = new BlackBoxManager();
+            var queueWriter1 = new EventQueueWriter();
+            var queueWriter2 = new EventQueueWriter();
+            logger.RegisterWriter(EventLevel.Critical, queueWriter1.Write);
+            logger.RegisterWriter(EventLevel.Critical, queueWriter2.Write);
+
+            logger.UnregisterWriter(queueWriter2.Write);
+
+            logger.Write(new EventMessage(EventLevel.Critical, "Hello Critical World!"));
+
+            Assert.Single(queueWriter1.Messages);
+            Assert.Empty(queueWriter2.Messages);
+        }
+
+        [Fact]
+        public void ClearWriter()
+        {
+            var logger = new BlackBoxManager();
+            var queueWriter1 = new EventQueueWriter();
+            var queueWriter2 = new EventQueueWriter();
+            logger.RegisterWriter(EventLevel.Critical, queueWriter1.Write);
+            logger.RegisterWriter(EventLevel.Critical, queueWriter2.Write);
+
+            logger.ClearWriters();
+
+            logger.Write(new EventMessage(EventLevel.Critical, "Hello Critical World!"));
+
+            Assert.Empty(queueWriter1.Messages);
+            Assert.Empty(queueWriter2.Messages);
+        }
     }
 }

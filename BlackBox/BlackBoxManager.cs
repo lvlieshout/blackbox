@@ -34,7 +34,7 @@ namespace BlackBox
         /// <summary>
         /// Collection of event writers. These will all be used when for event writing.
         /// </summary>
-        protected List<IEventWriterHolder> _writers;
+        protected readonly List<IEventWriterHolder> _writers;
 
         /// <summary>
         /// Fallback event writer. This will be used when a primary event writer throws an exception.
@@ -54,36 +54,39 @@ namespace BlackBox
         /// </summary>
         /// <param name="minimumLevel">Event level to trigger the writer.</param>
         /// <param name="writer">Event writer delegate.</param>
-        public void RegisterWriter(EventLevel minimumLevel, EventWriter writer)
+        public virtual void RegisterWriter(EventLevel minimumLevel, EventWriter writer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer), "Event writer cannot be NULL");
             _writers.Add(new EventWriterHolder(minimumLevel, writer));
         }
 
         /// <summary>
-        /// Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
+        /// Unregister a event writer.
+        /// </summary>
+        /// <param name="writer">Event writer to remove.</param>
+        public virtual void UnregisterWriter(EventWriter writer)
+        {
+            if (writer == null) throw new ArgumentNullException(nameof(writer), "Event writer cannot be NULL");
+            _writers.RemoveAll(t => t.Write == writer);
+        }
+
+        /// <summary>
+        /// Clear all event writers.
+        /// </summary>
+        public virtual void ClearWriters()
+        {
+            _writers.Clear();
+        }
+
+        /// <summary>
+        /// Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method. Last registered writer will be active.
         /// </summary>
         /// <param name="writer">Event writer delegate.</param>
-        public void RegisterFallbackWriter(EventWriter writer)
+        public virtual void RegisterFallbackWriter(EventWriter writer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer), "Event writer cannot be NULL");
             _writerFallBack = new EventWriterHolder(EventLevel.Debug, writer);
         }
-
-        ///// <summary>
-        ///// Checks if there is at least one writer which logs on given event level.
-        ///// </summary>
-        ///// <param name="level">Event level to check.</param>
-        ///// <returns>True is there is at least one writer that writers at given level.</returns>
-        //public virtual bool InEnabled(EventLevel level)
-        //{
-        //    if (level == EventLevel.Debug && !Debugger.IsAttached) return false;
-        //    for (int i = 0; i < _writers.Count; i++)
-        //    {
-        //        if (_writers[i].Level < level) return false;
-        //    }
-        //    return true;
-        //}
 
         /// <summary>
         /// Write event message. Use fallback event writer when primairy writer throws an exception. This write method blocks until the writer is finished.

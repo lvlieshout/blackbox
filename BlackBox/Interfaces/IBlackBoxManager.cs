@@ -34,6 +34,17 @@ namespace BlackBox
         void RegisterFallbackWriter(EventWriter writer);
 
         /// <summary>
+        /// Unregister a event writer.
+        /// </summary>
+        /// <param name="writer">Event writer to remove.</param>
+        void UnregisterWriter(EventWriter writer);
+
+        /// <summary>
+        /// Clear all event writers.
+        /// </summary>
+        void ClearWriters();
+
+        /// <summary>
         /// Register a event writer which will be triggered at given level.
         /// </summary>
         /// <param name="minimumLevel">Event level to trigger the writer.</param>

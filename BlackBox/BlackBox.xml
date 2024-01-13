@@ -118,9 +118,20 @@
             <param name="minimumLevel">Event level to trigger the writer.</param>
             <param name="writer">Event writer delegate.</param>
         </member>
+        <member name="M:BlackBox.BlackBoxManager.UnregisterWriter(BlackBox.EventWriter)">
+            <summary>
+            Unregister a event writer.
+            </summary>
+            <param name="writer">Event writer to remove.</param>
+        </member>
+        <member name="M:BlackBox.BlackBoxManager.ClearWriters">
+            <summary>
+            Clear all event writers.
+            </summary>
+        </member>
         <member name="M:BlackBox.BlackBoxManager.RegisterFallbackWriter(BlackBox.EventWriter)">
             <summary>
-            Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
+            Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method. Last registered writer will be active.
             </summary>
             <param name="writer">Event writer delegate.</param>
         </member>
@@ -688,6 +699,17 @@
             Register a fallback event writer which will be triggered when other event writers throw an exception on the Write method.
             </summary>
             <param name="writer">Event writer delegate.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxManager.UnregisterWriter(BlackBox.EventWriter)">
+            <summary>
+            Unregister a event writer.
+            </summary>
+            <param name="writer">Event writer to remove.</param>
+        </member>
+        <member name="M:BlackBox.IBlackBoxManager.ClearWriters">
+            <summary>
+            Clear all event writers.
+            </summary>
         </member>
         <member name="M:BlackBox.IBlackBoxManager.RegisterWriter(BlackBox.EventLevel,BlackBox.EventWriter)">
             <summary>
