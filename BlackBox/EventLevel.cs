@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2020 Lambert van Lieshout, YUMMO Software Development
+ * Copyright (c) 2020-2024 Lambert van Lieshout, YUMMO Software Development
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,18 +23,17 @@
 namespace BlackBox
 {
     /// <summary>
-    /// Event levels, defines the severity of an event. Also used to inducate the minimum level to log.
-    /// Excellent explanation of levels: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+    /// Event levels, defines the severity of an event. Also used to indicate the minimum level to log.
     /// </summary>
     public enum EventLevel
     {
         /// <summary>
-        /// Critical/Fatal. Use when something happens which terminates the application. Direct attention is needed.
+        /// Critical/Fatal. When an error occurs and application state can potentially corrupt the working and or data of the application.
         /// </summary>
         Critical    = 1,
 
         /// <summary>
-        /// Error. An exception has happend but the application can continue to run.
+        /// Error. An error/exception has happend but the application recover to correct state.
         /// </summary>
         Error       = 2,
 
@@ -49,12 +48,12 @@ namespace BlackBox
         Info        = 4,
 
         /// <summary>
-        /// Trace. Detailed info about the path and context of the application's going.
+        /// Trace. Used for extensive problem solving by specialists. Could include extensive state info.
         /// </summary>
         Trace       = 5,
 
         /// <summary>
-        /// Debug. Very detailed info only activated in debug modus/debugger attached.
+        /// Debug. Used for debugging/development, only logs when debugger is attached.
         /// </summary>
         Debug       = 6,
     }

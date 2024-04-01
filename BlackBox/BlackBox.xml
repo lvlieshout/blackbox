@@ -141,6 +141,12 @@
             </summary>
             <param name="message">Event message to write</param>
         </member>
+        <member name="M:BlackBox.BlackBoxManager.WriteToFallback(BlackBox.IEventMessage)">
+            <summary>
+            Write event message to fallback writer. If writer is not defined the message will be dropped.
+            </summary>
+            <param name="message">Event message to write</param>
+        </member>
         <member name="T:BlackBox.BlackBoxManagerThreaded">
             <summary>
             Black Box Manager. Handles log writing in a seperate background thread.
@@ -176,18 +182,17 @@
         </member>
         <member name="T:BlackBox.EventLevel">
             <summary>
-            Event levels, defines the severity of an event. Also used to inducate the minimum level to log.
-            Excellent explanation of levels: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            Event levels, defines the severity of an event. Also used to indicate the minimum level to log.
             </summary>
         </member>
         <member name="F:BlackBox.EventLevel.Critical">
             <summary>
-            Critical/Fatal. Use when something happens which terminates the application. Direct attention is needed.
+            Critical/Fatal. When an error occurs and application state can potentially corrupt the working and or data of the application.
             </summary>
         </member>
         <member name="F:BlackBox.EventLevel.Error">
             <summary>
-            Error. An exception has happend but the application can continue to run.
+            Error. An error/exception has happend but the application recover to correct state.
             </summary>
         </member>
         <member name="F:BlackBox.EventLevel.Warning">
@@ -202,12 +207,12 @@
         </member>
         <member name="F:BlackBox.EventLevel.Trace">
             <summary>
-            Trace. Detailed info about the path and context of the application's going.
+            Trace. Used for extensive problem solving by specialists. Could include extensive state info.
             </summary>
         </member>
         <member name="F:BlackBox.EventLevel.Debug">
             <summary>
-            Debug. Very detailed info only activated in debug modus/debugger attached.
+            Debug. Used for debugging/development, only logs when debugger is attached.
             </summary>
         </member>
         <member name="T:BlackBox.EventMessage">
@@ -608,7 +613,7 @@
             </summary>
             <param name="message">EventMessage</param>
         </member>
-        <member name="M:BlackBox.Writers.EventTSqlWriter.CreateTable">
+        <member name="M:BlackBox.Writers.EventTSqlWriter.CreateTableIfNotExist">
             <summary>
             Checks if log table exist in the database. If not then it will be created.
             </summary>

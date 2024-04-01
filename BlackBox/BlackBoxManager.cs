@@ -96,6 +96,7 @@ namespace BlackBox
         {
             if (message == null) return;
             if (message.Level == EventLevel.Debug && !Debugger.IsAttached) return;
+            bool writeToFallback = false;
             for (int i = 0; i < _writers.Count; i++)
             {
                 if (_writers[i].Level < message.Level) continue;
@@ -105,17 +106,28 @@ namespace BlackBox
                 }
                 catch (Exception exception)
                 {
-                    if (_writerFallBack != null)
-                    {
-                        try
-                        {
-                            _writerFallBack.Write(message);
-                            _writerFallBack.Write(exception.ToMessage());
-                        }
-                        catch { }
-                    }
+                    writeToFallback = true;
+                    WriteToFallback(exception.ToMessage());
                 }
             }
+            if (writeToFallback)
+            {
+                WriteToFallback(message);
+            }
+        }
+
+        /// <summary>
+        /// Write event message to fallback writer. If writer is not defined the message will be dropped.
+        /// </summary>
+        /// <param name="message">Event message to write</param>
+        protected void WriteToFallback(IEventMessage message)
+        {
+            if (_writerFallBack is null) return;
+            try
+            {
+                _writerFallBack.Write(message);
+            }
+            catch { }
         }
     }
 }

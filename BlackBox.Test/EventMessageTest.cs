@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace BlackBox.Test
 {
@@ -9,9 +8,10 @@ namespace BlackBox.Test
         public void ConstructorWithTwoParameters()
         {
             string content = "content";
-            string source = "ConstructorWithTwoParameters";
+            string source = nameof(ConstructorWithTwoParameters);
 
             var message = new EventMessage(EventLevel.Info, content);
+
             Assert.Equal(EventLevel.Info, message.Level);
             Assert.Equal(content, message.Content);
             Assert.Contains(source, message.Source);
@@ -24,6 +24,7 @@ namespace BlackBox.Test
             string source = "source";
             
             var message = new EventMessage(EventLevel.Info, content, source);
+
             Assert.Equal(EventLevel.Info, message.Level);
             Assert.Equal(content, message.Content);
             Assert.Equal(source, message.Source);

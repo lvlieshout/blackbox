@@ -105,7 +105,7 @@
             logger.Write(new EventMessage(EventLevel.Critical, "Hello Critical World!"));
 
             Assert.Single(throwWriter.Messages);
-            Assert.Single(throwFallbackWriter.Messages);
+            Assert.True(throwFallbackWriter.Messages.Count == 2);
         }
 
         [Fact]

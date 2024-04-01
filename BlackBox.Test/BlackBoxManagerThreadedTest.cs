@@ -1,5 +1,6 @@
 ﻿namespace BlackBox.Test
 {
+    using System;
     using System.Threading.Tasks;
     using System.Threading;
     using Xunit;
@@ -12,7 +13,7 @@
         {
             const int threadCount = 10000;
 
-            var logger = new BlackBoxManagerThreaded();
+            var logger = new BlackBoxManagerThreaded(threadCount, threadCount);
             var queueWriter = new EventQueueWriter();
             logger.RegisterWriter(EventLevel.Critical, queueWriter.Write);
 

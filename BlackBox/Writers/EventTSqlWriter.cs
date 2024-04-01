@@ -67,7 +67,7 @@ namespace BlackBox.Writers
             _keepConnectionOpen = keepConnectionOpen;
             _connection = new SqlConnection(connectionString);
             if (_keepConnectionOpen) _connection.Open();
-            CreateTable();
+            CreateTableIfNotExist();
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace BlackBox.Writers
                 command.Connection = _connection;
                 command.CommandText = "INSERT INTO [" + _tableName + "]([EventType],[TimeStamp],[Source],[Content],[Application]) VALUES (@EventType,@TimeStamp,@Source,@Content,@Application)";
                 command.Parameters.Add("EventType", SqlDbType.SmallInt).Value = (short)message.Level;
-                //command.Parameters.Add("Host", SqlDbType.VarChar, 255).Value = message.Host;
+                //command.Parameters.Add("Host", SqlDbType.VarChar, 255).Value = message.Host; // There is a host colum with default value the connected party
                 command.Parameters.Add("TimeStamp", SqlDbType.DateTime).Value = message.TimeStamp;
                 command.Parameters.Add("Source", SqlDbType.VarChar, 255).Value = message.Source;
                 command.Parameters.Add("Content", SqlDbType.VarChar).Value = message.Content;
@@ -95,21 +95,21 @@ namespace BlackBox.Writers
         /// <summary>
         /// Checks if log table exist in the database. If not then it will be created.
         /// </summary>
-        protected virtual void CreateTable()
+        protected virtual void CreateTableIfNotExist()
         {
             if (_connection.State == ConnectionState.Closed) _connection.Open();
-            int tableCount = 0;
             using (SqlCommand command = new SqlCommand())
             {
                 command.Connection = _connection;
                 command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName";
                 command.Parameters.Add("TableName", SqlDbType.NVarChar).Value = _tableName;
                 object result = command.ExecuteScalar();
+                bool tableExists = false;
                 if (result is int resultInt)
                 {
-                    tableCount = resultInt;
+                    tableExists = resultInt > 0;
                 }
-                if (tableCount == 0)
+                if (!tableExists)
                 {
                     command.CommandText = "CREATE TABLE [dbo].[" + _tableName + "] ([EventId] bigint IDENTITY(1, 1) NOT NULL,[EventType] smallint NOT NULL,[Host] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL DEFAULT (host_name()),[TimeStamp] datetime NOT NULL DEFAULT (getdate()),[Source] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Content] varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,[Application] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS,CONSTRAINT [PK__BlackBox__0CBAE877] PRIMARY KEY NONCLUSTERED ([EventId] ASC) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,IGNORE_DUP_KEY = OFF,STATISTICS_NORECOMPUTE = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY]) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
                     command.ExecuteNonQuery();
@@ -123,11 +123,9 @@ namespace BlackBox.Writers
         /// </summary>
         public virtual void Dispose()
         {
-            if (_connection != null)
-            {
-                if (_connection.State != ConnectionState.Closed) _connection.Close();
-                _connection.Dispose();
-            }
+            if (_connection == null) return;
+            if (_connection.State != ConnectionState.Closed) _connection.Close();
+            _connection.Dispose();
         }
     }
 }

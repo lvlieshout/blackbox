@@ -15,7 +15,7 @@
     {
         private readonly string _connectionString = "Data Source={0};Initial Catalog={1};User Id={2};Password={3}";
 
-        [Fact]
+        [Fact(Skip = "Dependent on SQL server")]
         public void CreateTable()
         {
             try
@@ -28,8 +28,8 @@
             catch { }
             Assert.True(true);
         }
-        
-        [Fact]
+
+        [Fact(Skip = "Dependent on SQL server")]
         public void Write()
         {
             try
